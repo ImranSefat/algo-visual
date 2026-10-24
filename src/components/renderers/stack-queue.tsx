@@ -18,7 +18,10 @@ export function Stack({ step, duration, compact }: RendererProps<StackState>) {
     <div className="flex h-full w-full items-end justify-center">
       <div className="flex h-full max-h-[440px] items-end gap-3">
         <div
-          className="relative flex h-full w-40 flex-col-reverse rounded-b-2xl border-2 border-t-0 border-muted-foreground/30 p-2"
+          className={cn(
+            "relative flex h-full flex-col-reverse rounded-b-2xl border-2 border-t-0 border-muted-foreground/30",
+            compact ? "w-20 p-1" : "w-40 p-2",
+          )}
           style={{ gap: GAP }}
         >
           <AnimatePresence initial={false} mode="popLayout">
@@ -35,7 +38,7 @@ export function Stack({ step, duration, compact }: RendererProps<StackState>) {
                   height: `calc((100% - ${(capacity - 1) * GAP}px) / ${capacity})`,
                 })}
               >
-                {item.value}
+                {!compact && item.value}
                 {i === items.length - 1 && !compact && (
                   <motion.span
                     layoutId="stack-top"

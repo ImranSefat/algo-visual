@@ -1,19 +1,16 @@
 "use client";
 
 import { Flag, Play } from "lucide-react";
-import { createContext, useContext, useRef, useState, type CSSProperties, type PointerEvent } from "react";
-import type { Cell, GridInputSpec } from "@/algorithms/core/input";
+import { useContext, useRef, useState, type CSSProperties, type PointerEvent } from "react";
+import type { Cell } from "@/algorithms/core/input";
 import { cellId, type GridState } from "@/algorithms/core/states";
 import type { HighlightKind } from "@/algorithms/core/types";
 import { cn } from "@/lib/utils";
 import { useGridTool, WEIGHT_COST, type GridTool } from "@/store/grid-tool";
+import { GridEditContext } from "./grid-edit-context";
 import { highlightMap } from "./highlight";
 import type { RendererProps } from "./types";
 
-export type GridEdit = Pick<GridInputSpec, "walls" | "start" | "end" | "weights">;
-
-/** Provided by the visualizer when the input is an editable grid; absent in previews. */
-export const GridEditContext = createContext<((edit: GridEdit) => void) | null>(null);
 
 type Draft = {
   mode: GridTool;

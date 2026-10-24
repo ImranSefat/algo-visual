@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { categories } from "@/algorithms/categories";
+import { SearchButton } from "./command-palette";
 import { ShortcutsButton } from "./shortcuts-dialog";
 import { ThemeToggle } from "./theme";
 
@@ -19,8 +20,12 @@ export function SiteHeader() {
               {c.id === "dp" ? "DP" : c.id === "structures" ? "Structures" : c.name}
             </Link>
           ))}
+          <Link href="/compare" className="rounded-md px-2.5 py-1.5 transition-colors hover:bg-muted hover:text-foreground">
+            Compare
+          </Link>
         </nav>
         <div className="ml-auto flex items-center gap-1">
+          <SearchButton />
           <ShortcutsButton />
           <ThemeToggle />
         </div>

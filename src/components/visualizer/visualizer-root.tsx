@@ -45,12 +45,13 @@ export function VisualizerRoot({ slug, children }: { slug: string; children: Rea
   );
 }
 
-function PlaybackClock() {
+export function PlaybackClock() {
   usePlaybackClock();
   return null;
 }
 
-function PlaybackShortcuts() {
+/** Space / arrows / Home / End / 1–6 / R for whichever visualizer stores are in context. */
+export function PlaybackShortcuts() {
   const playback = usePlaybackStore();
   const input = useInputStore();
   useEffect(() => {

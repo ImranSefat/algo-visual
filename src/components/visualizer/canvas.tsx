@@ -2,7 +2,7 @@
 
 import { useCallback } from "react";
 import { renderers } from "@/components/renderers";
-import { GridEditContext, type GridEdit } from "@/components/renderers/grid-graph";
+import { GridEditContext, type GridEdit } from "@/components/renderers/grid-edit-context";
 import { cn } from "@/lib/utils";
 import { useInputStore } from "@/store/input";
 import { useStepDuration } from "@/store/playback";

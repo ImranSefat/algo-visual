@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, JetBrains_Mono } from "next/font/google";
+import { categoryById } from "@/algorithms/categories";
+import { algorithmHref, algorithmList } from "@/algorithms/registry";
+import { CommandPalette, type PaletteItem } from "@/components/site/command-palette";
 import { Providers } from "@/components/site/providers";
 import { SiteHeader } from "@/components/site/site-header";
 import { themeScript } from "@/components/site/theme-script";
@@ -26,6 +29,13 @@ export const metadata: Metadata = {
     "Interactive data-structures and algorithms visualizer: smooth animations, a scrubbable timeline, and the real source code highlighted line by line.",
 };
 
+const paletteItems: PaletteItem[] = algorithmList.map((m) => ({
+  name: m.name,
+  href: algorithmHref(m),
+  group: categoryById[m.category].name,
+  complexity: m.complexity.time.average,
+}));
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
@@ -40,6 +50,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Providers>
           <SiteHeader />
           {children}
+          <CommandPalette items={paletteItems} />
         </Providers>
       </body>
     </html>

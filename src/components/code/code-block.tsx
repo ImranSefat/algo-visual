@@ -15,7 +15,7 @@ const lineAttributes: ShikiTransformer = {
 export async function CodeBlock({ code, lang = "typescript" }: { code: string; lang?: string }) {
   const html = await codeToHtml(code, {
     lang,
-    themes: { light: "github-light", dark: "github-dark" },
+    themes: { light: "github-light-default", dark: "github-dark-default" },
     defaultColor: false,
     transformers: [lineAttributes],
   });
