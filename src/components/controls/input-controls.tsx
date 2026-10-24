@@ -7,6 +7,9 @@ import { cn } from "@/lib/utils";
 import { useAlgorithm } from "@/components/visualizer/context";
 import { useInput } from "@/store/input";
 import { ArrayControls, TargetControl } from "./array-controls";
+import { KnapsackControls, ScalarControls, StringsControls } from "./dp-controls";
+import { GraphControls } from "./graph-controls";
+import { GridControls } from "./grid-controls";
 import { SequenceControls } from "./sequence-controls";
 
 /** Collapsible input panel; renders the editor for the current algorithm's input kind. */
@@ -47,6 +50,21 @@ export function InputControls({ className }: { className?: string }) {
           onRandomise={randomise}
         />
       );
+      break;
+    case "grid":
+      editor = <GridControls spec={spec} onChange={setSpec} onRandomise={randomise} />;
+      break;
+    case "graph":
+      editor = <GraphControls key={JSON.stringify(spec.edges)} spec={spec} onChange={setSpec} onRandomise={randomise} />;
+      break;
+    case "strings":
+      editor = <StringsControls key={`${spec.a}|${spec.b}`} spec={spec} onChange={setSpec} onRandomise={randomise} />;
+      break;
+    case "knapsack":
+      editor = <KnapsackControls spec={spec} onChange={setSpec} onRandomise={randomise} />;
+      break;
+    case "scalar":
+      editor = <ScalarControls spec={spec} onChange={setSpec} />;
       break;
   }
 

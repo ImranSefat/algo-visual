@@ -2,6 +2,20 @@ import { resolveInput, type InputKind, type InputSpec, type ResolvedInput } from
 import { collect } from "./core/step";
 import type { AlgorithmMeta, AlgorithmModule, Category, Step } from "./core/types";
 
+import * as editDistance from "./dp/edit-distance";
+import * as fibonacci from "./dp/fibonacci";
+import * as knapsack from "./dp/knapsack";
+import * as lcs from "./dp/lcs";
+import * as aStar from "./graphs/a-star";
+import * as bfsGraph from "./graphs/bfs-graph";
+import * as bfsGrid from "./graphs/bfs-grid";
+import * as dfsGraph from "./graphs/dfs-graph";
+import * as dfsGrid from "./graphs/dfs-grid";
+import * as dijkstraGraph from "./graphs/dijkstra-graph";
+import * as dijkstraGrid from "./graphs/dijkstra-grid";
+import * as kruskal from "./graphs/kruskal";
+import * as prim from "./graphs/prim";
+import * as topologicalSort from "./graphs/topological-sort";
 import * as binarySearch from "./searching/binary-search";
 import * as jumpSearch from "./searching/jump-search";
 import * as linearSearch from "./searching/linear-search";
@@ -52,6 +66,20 @@ const modules: AnyAlgorithm[] = [
   avlTree,
   minHeap,
   trie,
+  bfsGrid,
+  dfsGrid,
+  dijkstraGrid,
+  aStar,
+  bfsGraph,
+  dfsGraph,
+  dijkstraGraph,
+  topologicalSort,
+  prim,
+  kruskal,
+  fibonacci,
+  lcs,
+  knapsack,
+  editDistance,
 ];
 
 export const algorithms: Record<string, AnyAlgorithm> = Object.fromEntries(
