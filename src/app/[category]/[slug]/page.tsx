@@ -5,6 +5,7 @@ import { AlgorithmHeader, ComplexityCard, DescriptionCard } from "@/components/a
 import { CodeBlock } from "@/components/code/code-block";
 import { CodePanel } from "@/components/code/code-panel";
 import { CountersPanel, StepNote, VariablesPanel } from "@/components/code/step-panels";
+import { InputControls } from "@/components/controls/input-controls";
 import { Canvas } from "@/components/visualizer/canvas";
 import { Transport } from "@/components/visualizer/transport";
 import { VisualizerRoot } from "@/components/visualizer/visualizer-root";
@@ -47,9 +48,12 @@ export default async function AlgorithmPage({ params }: PageProps<"/[category]/[
             <CountersPanel />
           </aside>
         </div>
-        <div className="grid gap-4 lg:grid-cols-2">
-          <DescriptionCard meta={meta} />
-          <ComplexityCard meta={meta} />
+        <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(340px,440px)]">
+          <InputControls />
+          <div className="grid gap-4">
+            <DescriptionCard meta={meta} />
+            <ComplexityCard meta={meta} />
+          </div>
         </div>
       </main>
     </VisualizerRoot>

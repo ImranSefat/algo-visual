@@ -41,3 +41,14 @@ export function vizColor(kind: HighlightKind | undefined): string {
 export function highlightColor(id: string, highlights: Highlight[]): string {
   return vizColor(highlightMap(highlights).get(id));
 }
+
+/** Node fill for tree/graph/list nodes: a tint of the highlight colour over the card surface. */
+export function nodeFill(kind: HighlightKind | undefined): string {
+  if (!kind) return "var(--card)";
+  return `color-mix(in oklch, var(--viz-${kind}) var(--viz-node-tint), var(--card))`;
+}
+
+/** Node outline: the highlight colour itself, or the neutral token when unhighlighted. */
+export function nodeStroke(kind: HighlightKind | undefined): string {
+  return kind ? `var(--viz-${kind})` : "var(--viz-default)";
+}

@@ -2,12 +2,37 @@ import { resolveInput, type InputKind, type InputSpec, type ResolvedInput } from
 import { collect } from "./core/step";
 import type { AlgorithmMeta, AlgorithmModule, Category, Step } from "./core/types";
 
+import * as binarySearch from "./searching/binary-search";
+import * as jumpSearch from "./searching/jump-search";
+import * as linearSearch from "./searching/linear-search";
 import * as bubbleSort from "./sorting/bubble-sort";
+import * as countingSort from "./sorting/counting-sort";
+import * as heapSort from "./sorting/heap-sort";
+import * as insertionSort from "./sorting/insertion-sort";
+import * as mergeSort from "./sorting/merge-sort";
+import * as quickSort from "./sorting/quick-sort";
+import * as radixSort from "./sorting/radix-sort";
+import * as selectionSort from "./sorting/selection-sort";
+import * as shellSort from "./sorting/shell-sort";
 
 /** Any registered algorithm, discriminated by its input kind. */
 export type AnyAlgorithm = { [K in InputKind]: AlgorithmModule<K> }[InputKind];
 
-const modules: AnyAlgorithm[] = [bubbleSort];
+/** Display order within each category. */
+const modules: AnyAlgorithm[] = [
+  bubbleSort,
+  selectionSort,
+  insertionSort,
+  shellSort,
+  mergeSort,
+  quickSort,
+  heapSort,
+  countingSort,
+  radixSort,
+  linearSearch,
+  binarySearch,
+  jumpSearch,
+];
 
 export const algorithms: Record<string, AnyAlgorithm> = Object.fromEntries(
   modules.map((m) => [m.meta.slug, m]),

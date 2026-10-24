@@ -1,6 +1,8 @@
 import type { ComponentType } from "react";
 import type { RendererKind } from "@/algorithms/core/types";
 import { ArrayBars } from "./array-bars";
+import { ArrayBarsAux } from "./array-bars-aux";
+import { Heap } from "./heap";
 import type { RendererProps } from "./types";
 
 export type AnyRenderer = ComponentType<RendererProps<unknown>>;
@@ -10,4 +12,6 @@ const erase = <S>(renderer: ComponentType<RendererProps<S>>) => renderer as unkn
 
 export const renderers: Partial<Record<RendererKind, AnyRenderer>> = {
   "array-bars": erase(ArrayBars),
+  "array-bars-aux": erase(ArrayBarsAux),
+  heap: erase(Heap),
 };

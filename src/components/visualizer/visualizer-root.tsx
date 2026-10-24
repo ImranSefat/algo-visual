@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { Suspense, useEffect, useState, type ReactNode } from "react";
 import { getAlgorithm, runAlgorithm } from "@/algorithms/registry";
 import { isTextEntry, keyOwnedByFocus } from "@/lib/keyboard";
 import { createInputStore, InputContext, useInputStore } from "@/store/input";
@@ -12,6 +12,7 @@ import {
   usePlaybackStore,
 } from "@/store/playback";
 import { AlgorithmContext } from "./context";
+import { UrlStateSync } from "./url-state-sync";
 
 function createVisualizer(slug: string) {
   const algo = getAlgorithm(slug);
@@ -34,6 +35,9 @@ export function VisualizerRoot({ slug, children }: { slug: string; children: Rea
         <PlaybackContext.Provider value={playback}>
           <PlaybackClock />
           <PlaybackShortcuts />
+          <Suspense fallback={null}>
+            <UrlStateSync />
+          </Suspense>
           {children}
         </PlaybackContext.Provider>
       </InputContext.Provider>

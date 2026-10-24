@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { categories } from "@/algorithms/categories";
 import { ShortcutsButton } from "./shortcuts-dialog";
 import { ThemeToggle } from "./theme";
 
@@ -12,6 +13,13 @@ export function SiteHeader() {
             algo<span className="text-brand">·</span>visual
           </span>
         </Link>
+        <nav aria-label="Categories" className="hidden items-center gap-1 text-sm text-muted-foreground md:flex">
+          {categories.map((c) => (
+            <Link key={c.id} href={`/#${c.id}`} className="rounded-md px-2.5 py-1.5 transition-colors hover:bg-muted hover:text-foreground">
+              {c.id === "dp" ? "DP" : c.id === "structures" ? "Structures" : c.name}
+            </Link>
+          ))}
+        </nav>
         <div className="ml-auto flex items-center gap-1">
           <ShortcutsButton />
           <ThemeToggle />

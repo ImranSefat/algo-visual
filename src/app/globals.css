@@ -91,6 +91,9 @@
   --viz-found: oklch(0.68 0.19 148);
   --viz-notfound: oklch(0.6 0.2 20);
 
+  /* Node fill: a tint of the highlight colour over the card. */
+  --viz-node-tint: 30%;
+
   /* Translucent surface for the code-line highlight. */
   --code-highlight: oklch(0.62 0.18 255 / 0.13);
   --code-highlight-edge: oklch(0.62 0.18 255);
@@ -161,8 +164,21 @@
   transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
+/* Pointer labels and tally bars slide with CSS (calc() positions interpolate natively). */
+.viz-pointer {
+  transition-property: left, top;
+  transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.viz-size {
+  transition-property: height, width, background-color;
+  transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .viz-color {
+  .viz-color,
+  .viz-pointer,
+  .viz-size {
     transition: none !important;
   }
 }
