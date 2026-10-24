@@ -1,9 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  cacheComponents: true,
-  partialPrefetching: true,
+  // Cache Components / Partial Prefetching are off on purpose: every page here is
+  // fully static (generateStaticParams) and all URL state is read on the client.
   reactCompiler: true,
   turbopack: {
     rules: {
