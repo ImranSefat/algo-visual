@@ -100,12 +100,12 @@ export function HeapTree({
 
 /** Two synced views of the same items: the heap as a tree, and the backing array as bars. */
 export function Heap({ step, duration, compact }: RendererProps<HeapState>) {
-  const { items, size, pointers } = step.state;
+  const { items, size, capacity, pointers } = step.state;
   const kinds = highlightMap(step.highlights);
   return (
     <div className="flex h-full w-full flex-col gap-3">
       <div className="min-h-0 flex-[3]">
-        <HeapTree items={items} size={size} kinds={kinds} duration={duration} />
+        <HeapTree items={items} size={size} kinds={kinds} duration={duration} capacity={capacity} />
       </div>
       <div className="flex min-h-0 flex-[2] flex-col">
         <BarRow
@@ -115,6 +115,7 @@ export function Heap({ step, duration, compact }: RendererProps<HeapState>) {
           kinds={kinds}
           duration={duration}
           labels={!compact && items.length <= LABEL_LIMIT}
+          presence
         />
         {pointers && !compact && <PointerRow pointers={pointers} n={items.length} duration={duration} />}
       </div>

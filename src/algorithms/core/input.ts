@@ -15,8 +15,8 @@ export type SearchInputSpec = { kind: "search"; array: ArrayInputSpec; target: n
 
 export type SequenceOpName = "insert" | "delete" | "search" | "push" | "pop" | "enqueue" | "dequeue";
 
-/** `index` is used by positional structures (array insert/delete at index). */
-export type SequenceOp = { op: SequenceOpName; value?: number; index?: number };
+/** `index` is used by positional structures (array insert/delete at index); `word` by the trie. */
+export type SequenceOp = { op: SequenceOpName; value?: number; index?: number; word?: string };
 
 /** `initial` values are loaded before the first traced op. */
 export type SequenceInputSpec = { kind: "sequence"; initial?: number[]; ops: SequenceOp[] };

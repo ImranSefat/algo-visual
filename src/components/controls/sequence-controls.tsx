@@ -20,9 +20,11 @@ function opShapes(defaults: SequenceInputSpec) {
   const shape = (name: SequenceOpName) => {
     const ops = defaults.ops.filter((o) => o.op === name);
     const indexed = ops.some((o) => o.index !== undefined);
+    const word = ops.some((o) => o.word !== undefined);
     return {
       index: indexed ? (ops.every((o) => o.index !== undefined) ? "required" : "optional") : "none",
-      value: VALUE_OPS.includes(name) && !(name === "delete" && indexed),
+      value: !word && VALUE_OPS.includes(name) && !(name === "delete" && indexed),
+      word,
     } as const;
   };
   return { names, shape };
@@ -75,6 +77,11 @@ export function SequenceControls({
 
   const addOp = () => {
     const next: SequenceOp = { op };
+    if (current.word) {
+      const w = value.trim().toLowerCase();
+      if (!/^[a-z]{1,12}$/.test(w)) return setError("Use 1–12 letters a–z");
+      next.word = w;
+    }
     if (current.value) {
       const v = Number(value);
       if (value === "" || !Number.isInteger(v) || v < 0 || v > 99) return setError("Value must be a whole number 0–99");
@@ -105,29 +112,31 @@ export function SequenceControls({
 
   return (
     <div className="grid gap-4">
-      <Field label="Starting contents" hint={`${spec.initial?.length ?? 0} values`}>
-        <form
-          className="flex gap-2"
-          onSubmit={(e) => {
-            e.preventDefault();
-            applyInitial();
-          }}
-        >
-          <Input
-            value={initialText}
-            onChange={(e) => setInitialText(e.target.value)}
-            placeholder="empty"
-            aria-label="Starting contents, comma separated"
-            aria-invalid={initialError !== null}
-            className="font-mono text-xs"
-            spellCheck={false}
-          />
-          <Button type="submit" variant="outline">
-            Apply
-          </Button>
-        </form>
-        {initialError && <p className="mt-1.5 text-xs text-destructive">{initialError}</p>}
-      </Field>
+      {!names.some((n) => shape(n).word) && (
+        <Field label="Starting contents" hint={`${spec.initial?.length ?? 0} values`}>
+          <form
+            className="flex gap-2"
+            onSubmit={(e) => {
+              e.preventDefault();
+              applyInitial();
+            }}
+          >
+            <Input
+              value={initialText}
+              onChange={(e) => setInitialText(e.target.value)}
+              placeholder="empty"
+              aria-label="Starting contents, comma separated"
+              aria-invalid={initialError !== null}
+              className="font-mono text-xs"
+              spellCheck={false}
+            />
+            <Button type="submit" variant="outline">
+              Apply
+            </Button>
+          </form>
+          {initialError && <p className="mt-1.5 text-xs text-destructive">{initialError}</p>}
+        </Field>
+      )}
 
       <Field label="Operations" hint={`${spec.ops.length} / ${LIMITS.ops}`}>
         <ol className="flex min-h-9 flex-wrap gap-1.5">
@@ -171,6 +180,17 @@ export function SequenceControls({
           </SelectContent>
         </Select>
         {current.value && <NumberInput value={value} onChange={setValue} placeholder="value" label="Operation value" />}
+        {current.word && (
+          <Input
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            placeholder="word"
+            aria-label="Operation word"
+            className="w-32 font-mono"
+            spellCheck={false}
+            autoCapitalize="off"
+          />
+        )}
         {current.index !== "none" && (
           <NumberInput
             value={index}

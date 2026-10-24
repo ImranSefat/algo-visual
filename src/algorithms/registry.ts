@@ -15,11 +15,15 @@ import * as radixSort from "./sorting/radix-sort";
 import * as selectionSort from "./sorting/selection-sort";
 import * as shellSort from "./sorting/shell-sort";
 import * as dynamicArray from "./structures/array";
+import * as avlTree from "./structures/avl-tree";
+import * as bst from "./structures/bst";
 import * as doublyLinkedList from "./structures/doubly-linked-list";
 import * as hashTable from "./structures/hash-table";
+import * as minHeap from "./structures/min-heap";
 import * as queue from "./structures/queue";
 import * as singlyLinkedList from "./structures/singly-linked-list";
 import * as stack from "./structures/stack";
+import * as trie from "./structures/trie";
 
 /** Any registered algorithm, discriminated by its input kind. */
 export type AnyAlgorithm = { [K in InputKind]: AlgorithmModule<K> }[InputKind];
@@ -44,6 +48,10 @@ const modules: AnyAlgorithm[] = [
   stack,
   queue,
   hashTable,
+  bst,
+  avlTree,
+  minHeap,
+  trie,
 ];
 
 export const algorithms: Record<string, AnyAlgorithm> = Object.fromEntries(

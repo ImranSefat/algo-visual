@@ -6,6 +6,7 @@ import { HashTable } from "./hash-table";
 import { Heap } from "./heap";
 import { LinkedList } from "./linked-list";
 import { Queue, Stack } from "./stack-queue";
+import { Tree } from "./tree";
 import type { RendererProps } from "./types";
 
 export type AnyRenderer = ComponentType<RendererProps<unknown>>;
@@ -21,4 +22,5 @@ export const renderers: Partial<Record<RendererKind, AnyRenderer>> = {
   stack: erase(Stack),
   queue: erase(Queue),
   "hash-table": erase(HashTable),
+  tree: erase(Tree),
 };

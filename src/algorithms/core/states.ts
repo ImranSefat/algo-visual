@@ -27,8 +27,11 @@ export type AuxState = {
   auxPointers?: Pointers;
 };
 
-/** `heap`: items[0..size) is the heap (drawn as a tree too); the rest is outside it. */
-export type HeapState = { items: Item[]; size: number; pointers?: Pointers };
+/**
+ * `heap`: items[0..size) is the heap (drawn as a tree too); the rest is outside it.
+ * `capacity` keeps the tree layout stable while a heap grows and shrinks.
+ */
+export type HeapState = { items: Item[]; size: number; capacity?: number; pointers?: Pointers };
 
 /** `array-bars` for a fixed-capacity array: empty slots are drawn, so shifting is visible. */
 export type SlotArrayState = { slots: Slot[]; size: number; pointers?: Pointers };
@@ -68,6 +71,31 @@ export const bucketId = (h: number) => `bucket-${h}`;
 export type HashTableState = {
   buckets: Item[][];
   incoming?: { item: Item; hash: number | null };
+};
+
+// ---------- Trees ----------
+
+export type TreeNode = {
+  id: string;
+  label: string;
+  /** Binary trees: [left, right] with null for a missing child. Tries: children in display order. */
+  children: (string | null)[];
+  /** Small annotation beside the node, e.g. an AVL height and balance factor. */
+  badge?: string;
+  /** Trie: a word ends at this node. */
+  terminal?: boolean;
+};
+
+/** `tree`: nodes keyed by id so the renderer can glide them through rotations. */
+export type TreeState = {
+  root: string | null;
+  nodes: Record<string, TreeNode>;
+  /** Keep left/right slots even when a node has one child. */
+  binary: boolean;
+  /** A key travelling down the tree (insert / search), drawn beside node `at`. */
+  probe?: { label: string; at: string | null };
+  /** Draw each child's label on the edge leading to it (tries). */
+  edgeLabels?: boolean;
 };
 
 // ---------- Graphs ----------

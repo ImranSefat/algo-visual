@@ -3,7 +3,9 @@ import type { Item } from "../core/types";
 
 /** Human label for an op, e.g. `insert(42 @ 2)`. */
 export function opLabel(op: SequenceOp): string {
-  const args = [op.value, op.index !== undefined ? `@ ${op.index}` : undefined].filter((a) => a !== undefined);
+  const args = [op.word !== undefined ? `"${op.word}"` : op.value, op.index !== undefined ? `@ ${op.index}` : undefined].filter(
+    (a) => a !== undefined,
+  );
   return `${op.op}(${args.join(" ")})`;
 }
 

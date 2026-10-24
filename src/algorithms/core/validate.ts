@@ -82,6 +82,10 @@ function sanitizeOps(v: unknown): SequenceOp[] | null {
       if (!inRange(raw.index, [0, 999])) return null;
       op.index = raw.index;
     }
+    if (raw.word !== undefined) {
+      if (typeof raw.word !== "string" || !/^[a-z]{1,12}$/.test(raw.word)) return null;
+      op.word = raw.word;
+    }
     ops.push(op);
   }
   return ops;

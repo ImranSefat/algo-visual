@@ -12,8 +12,21 @@ export function pickTarget(values: number[], seed: number): number {
  * A random op sequence using the same op names (and index-style) as `template`. A simulated
  * multiset of live values keeps deletes/searches mostly pointing at values that exist.
  */
+const WORDS = ["tea", "ten", "ted", "to", "tone", "tonic", "in", "inn", "ink", "car", "cart", "care", "cat", "dog", "dot", "do", "art", "arc"];
+
 export function randomSequence(template: SequenceInputSpec, seed: number): SequenceInputSpec {
   const rng = mulberry32(seed);
+  if (template.ops.some((o) => o.word !== undefined)) {
+    // Word structures (trie): insert a handful of overlapping words, then search some hits and misses.
+    const pool = [...WORDS].sort(() => rng() - 0.5);
+    const inserted = pool.slice(0, randInt(rng, 4, 7));
+    const searches = [inserted[0], inserted[1].slice(0, -1) || inserted[1], pool[pool.length - 1]];
+    return {
+      kind: "sequence",
+      initial: [],
+      ops: [...inserted.map((word) => ({ op: "insert" as const, word })), ...searches.map((word) => ({ op: "search" as const, word }))],
+    };
+  }
   const names = [...new Set(template.ops.map((o) => o.op))] as SequenceOpName[];
   const indexed = new Set(template.ops.filter((o) => o.index !== undefined).map((o) => o.op));
   const adds: SequenceOpName[] = ["insert", "push", "enqueue"];
