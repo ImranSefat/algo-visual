@@ -2,7 +2,10 @@ import type { ComponentType } from "react";
 import type { RendererKind } from "@/algorithms/core/types";
 import { ArrayBars } from "./array-bars";
 import { ArrayBarsAux } from "./array-bars-aux";
+import { HashTable } from "./hash-table";
 import { Heap } from "./heap";
+import { LinkedList } from "./linked-list";
+import { Queue, Stack } from "./stack-queue";
 import type { RendererProps } from "./types";
 
 export type AnyRenderer = ComponentType<RendererProps<unknown>>;
@@ -14,4 +17,8 @@ export const renderers: Partial<Record<RendererKind, AnyRenderer>> = {
   "array-bars": erase(ArrayBars),
   "array-bars-aux": erase(ArrayBarsAux),
   heap: erase(Heap),
+  "linked-list": erase(LinkedList),
+  stack: erase(Stack),
+  queue: erase(Queue),
+  "hash-table": erase(HashTable),
 };

@@ -1,7 +1,7 @@
 "use client";
 
-import { motion } from "motion/react";
-import { asArrayView, type ArrayState, type Pointers } from "@/algorithms/core/states";
+import { AnimatePresence, motion } from "motion/react";
+import { asArrayView, type ArrayState, type Pointers, type SlotArrayState } from "@/algorithms/core/states";
 import type { Item } from "@/algorithms/core/types";
 import { cn } from "@/lib/utils";
 import { highlightMap, vizColor, type HighlightMap } from "./highlight";
@@ -37,41 +37,55 @@ type BarRowProps = {
   className?: string;
   /** Draws a dashed reference line at this value (search target). */
   target?: number;
+  /** Animate bars in and out (structures that create and destroy items). */
+  presence?: boolean;
 };
 
-export function BarRow({ slots, max, kinds, duration, labels, className, target }: BarRowProps) {
+export function BarRow({ slots, max, kinds, duration, labels, className, target, presence }: BarRowProps) {
   const n = slots.length;
   const layout = n <= LAYOUT_LIMIT;
   const gap = barGap(n);
+  // Mount/unmount animations only for structures; sorting bars never appear or disappear.
+  const enterExit = presence
+    ? { initial: { opacity: 0, scaleY: 0 }, animate: { opacity: 1, scaleY: 1 }, exit: { opacity: 0, scaleY: 0 } }
+    : {};
+  const bars = slots.map((item, i) =>
+    item === null ? (
+      <div key={`slot-${i}`} className="h-full flex-1 rounded-t-[3px] border border-dashed border-border" />
+    ) : (
+      <motion.div
+        key={item.id}
+        layout={layout}
+        layoutId={layout ? item.id : undefined}
+        {...enterExit}
+        transition={{ layout: { type: "spring", visualDuration: duration, bounce: 0.18 }, default: { duration } }}
+        className="viz-color relative min-h-[3px] flex-1 origin-bottom rounded-t-[3px]"
+        style={{
+          height: `${(item.value / max) * 100}%`,
+          backgroundColor: vizColor(kinds.get(item.id)),
+          transitionDuration: `${duration}s`,
+        }}
+      >
+        {labels && (
+          <span
+            className="absolute inset-x-0 -top-[1.35em] text-center font-mono leading-none text-muted-foreground tabular-nums"
+            style={{ fontSize: `min(11px, calc(100cqw / ${n} * 0.42))` }}
+          >
+            {item.value}
+          </span>
+        )}
+      </motion.div>
+    ),
+  );
   return (
     <div className={cn("@container h-full w-full", labels && "pt-5", className)}>
       <div className="relative flex h-full w-full items-end" style={{ gap }}>
-        {slots.map((item, i) =>
-          item === null ? (
-            <div key={`slot-${i}`} className="h-full flex-1 rounded-t-[3px] border border-dashed border-border" />
-          ) : (
-            <motion.div
-              key={item.id}
-              layout={layout}
-              layoutId={layout ? item.id : undefined}
-              transition={{ layout: { type: "spring", visualDuration: duration, bounce: 0.18 } }}
-              className="viz-color relative min-h-[3px] flex-1 rounded-t-[3px]"
-              style={{
-                height: `${(item.value / max) * 100}%`,
-                backgroundColor: vizColor(kinds.get(item.id)),
-                transitionDuration: `${duration}s`,
-              }}
-            >
-              {labels && (
-                <span
-                  className="absolute inset-x-0 -top-[1.35em] text-center font-mono leading-none text-muted-foreground tabular-nums"
-                  style={{ fontSize: `min(11px, calc(100cqw / ${n} * 0.42))` }}
-                >
-                  {item.value}
-                </span>
-              )}
-            </motion.div>
-          ),
+        {presence ? (
+          <AnimatePresence initial={false} mode="popLayout">
+            {bars}
+          </AnimatePresence>
+        ) : (
+          bars
         )}
         {target !== undefined && (
           <div
@@ -114,8 +128,40 @@ export function PointerRow({ pointers, n, duration }: { pointers: Pointers; n: n
   );
 }
 
-export function ArrayBars({ step, duration, compact }: RendererProps<ArrayState>) {
-  const { items, target, pointers } = asArrayView(step.state);
+/** Slot numbers under a fixed-capacity array. */
+function IndexRow({ n }: { n: number }) {
+  return (
+    <div className="flex w-full shrink-0 pt-1" style={{ gap: barGap(n) }} aria-hidden>
+      {Array.from({ length: n }, (_, i) => (
+        <span key={i} className="flex-1 text-center font-mono text-[10px] text-muted-foreground/70">
+          {i}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+export function ArrayBars({ step, duration, compact }: RendererProps<ArrayState | SlotArrayState>) {
+  const state = step.state;
+  if ("slots" in state) {
+    const { slots, pointers } = state;
+    return (
+      <div className="flex h-full w-full flex-col">
+        <BarRow
+          className="min-h-0 flex-1"
+          slots={slots}
+          max={maxValue(slots)}
+          kinds={highlightMap(step.highlights)}
+          duration={duration}
+          labels={!compact && slots.length <= LABEL_LIMIT}
+          presence
+        />
+        {!compact && <IndexRow n={slots.length} />}
+        {pointers && !compact && <PointerRow pointers={pointers} n={slots.length} duration={duration} />}
+      </div>
+    );
+  }
+  const { items, target, pointers } = asArrayView(state);
   const max = Math.max(maxValue(items), target ?? 0);
   return (
     <div className="flex h-full w-full flex-col">

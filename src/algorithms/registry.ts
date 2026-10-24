@@ -14,6 +14,12 @@ import * as quickSort from "./sorting/quick-sort";
 import * as radixSort from "./sorting/radix-sort";
 import * as selectionSort from "./sorting/selection-sort";
 import * as shellSort from "./sorting/shell-sort";
+import * as dynamicArray from "./structures/array";
+import * as doublyLinkedList from "./structures/doubly-linked-list";
+import * as hashTable from "./structures/hash-table";
+import * as queue from "./structures/queue";
+import * as singlyLinkedList from "./structures/singly-linked-list";
+import * as stack from "./structures/stack";
 
 /** Any registered algorithm, discriminated by its input kind. */
 export type AnyAlgorithm = { [K in InputKind]: AlgorithmModule<K> }[InputKind];
@@ -32,6 +38,12 @@ const modules: AnyAlgorithm[] = [
   linearSearch,
   binarySearch,
   jumpSearch,
+  dynamicArray,
+  singlyLinkedList,
+  doublyLinkedList,
+  stack,
+  queue,
+  hashTable,
 ];
 
 export const algorithms: Record<string, AnyAlgorithm> = Object.fromEntries(

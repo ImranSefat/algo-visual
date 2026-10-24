@@ -4,8 +4,10 @@ import { ChevronDown, RotateCcw } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useAlgorithm } from "@/components/visualizer/context";
 import { useInput } from "@/store/input";
 import { ArrayControls, TargetControl } from "./array-controls";
+import { SequenceControls } from "./sequence-controls";
 
 /** Collapsible input panel; renders the editor for the current algorithm's input kind. */
 export function InputControls({ className }: { className?: string }) {
@@ -13,6 +15,7 @@ export function InputControls({ className }: { className?: string }) {
   const setSpec = useInput((s) => s.setSpec);
   const randomise = useInput((s) => s.randomise);
   const reset = useInput((s) => s.reset);
+  const defaults = useAlgorithm().meta.defaultInput;
   const [open, setOpen] = useState(true);
 
   let editor: React.ReactNode = null;
@@ -31,6 +34,18 @@ export function InputControls({ className }: { className?: string }) {
           />
           <TargetControl target={spec.target} array={spec.array} onChange={(target) => setSpec({ ...spec, target })} />
         </div>
+      );
+      break;
+    case "sequence":
+      if (defaults.kind !== "sequence") break;
+      editor = (
+        <SequenceControls
+          key={(spec.initial ?? []).join(",")}
+          spec={spec}
+          defaults={defaults}
+          onChange={setSpec}
+          onRandomise={randomise}
+        />
       );
       break;
   }
