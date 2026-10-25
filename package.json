@@ -1,6 +1,10 @@
 {
   "name": "algo-visual",
   "version": "0.1.0",
+  "description": "Interactive visualizer for data structures and algorithms: step through each operation with the source code highlighted line by line.",
+  "license": "MIT",
+  "author": "Imran Sefat (https://imransefat.com)",
+  "homepage": "https://algo-visual-iota.vercel.app",
   "private": true,
   "scripts": {
     "dev": "next dev",

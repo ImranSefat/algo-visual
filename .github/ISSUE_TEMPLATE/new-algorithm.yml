@@ -1,0 +1,53 @@
+name: Request an algorithm
+description: Suggest an algorithm or data structure you'd like to see visualized.
+title: "[Algorithm] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for the idea. The more you describe what should happen on screen, the easier it is to build.
+  - type: input
+    id: name
+    attributes:
+      label: Algorithm or data structure
+      placeholder: e.g. Bellman-Ford, red-black tree, KMP string search
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Sorting
+        - Searching
+        - Data structures
+        - Graphs
+        - Dynamic programming
+        - Strings
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: visual
+    attributes:
+      label: What should the visualization show?
+      description: Which moments matter most? What should be highlighted at each step?
+      placeholder: e.g. Show each edge being relaxed, and highlight the negative cycle when one is found.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why would it help?
+      description: A course it comes up in, a concept students get stuck on, an interview favourite.
+  - type: input
+    id: reference
+    attributes:
+      label: Reference
+      description: A textbook section, lecture or article that explains it well (optional).
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Contributing
+      options:
+        - label: I'd like to implement this myself (see CONTRIBUTING.md).

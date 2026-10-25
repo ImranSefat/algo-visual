@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Try the live site
+    url: https://algo-visual-iota.vercel.app
+    about: Check whether the problem happens on the latest version.
+  - name: Say hello
+    url: https://www.linkedin.com/in/imransefat/
+    about: Questions or feedback that aren't a bug or a feature request.

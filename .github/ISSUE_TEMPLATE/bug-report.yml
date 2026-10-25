@@ -1,0 +1,33 @@
+name: Report a bug
+description: Something is wrong, confusing or broken.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: The page URL records the exact input and step you were on, so pasting it is usually all it takes to reproduce a problem.
+  - type: input
+    id: url
+    attributes:
+      label: Page URL
+      placeholder: https://algo-visual-iota.vercel.app/sorting/quick-sort?n=24&seed=7&step=40
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: Wrong highlight, a step note that doesn't match, a crash, a layout problem…
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect instead?
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Browser and device
+      placeholder: e.g. Safari 18 on iPhone 15, Chrome 141 on Windows

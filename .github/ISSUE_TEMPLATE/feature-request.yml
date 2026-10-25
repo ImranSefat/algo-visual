@@ -1,0 +1,24 @@
+name: Suggest a feature
+description: An idea to make algo·visual more useful for learning.
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like?
+      placeholder: e.g. Let me step through two algorithms at different speeds in compare mode.
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does it solve?
+      description: What were you trying to understand or do when you wanted this?
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Anything else?
+      description: Sketches, screenshots or links to tools that do something similar.
