@@ -119,7 +119,7 @@ export function* run(input: ResolvedInput<"graph">): Generator<Step<GraphState>>
     table: {
       title: "Priority queue",
       columns: ["Node", "Dist", "Via"],
-      rows: queued().map(({ d, v }) => [nodeLabel(v), d, prev[v] === null ? "—" : nodeLabel(prev[v])]),
+      rows: queued().map(({ d, v }) => [nodeLabel(v), d, prev[v] === null ? "-" : nodeLabel(prev[v])]),
     },
     output: { title: "Settled", items: settled.map(nodeLabel) },
   });
@@ -142,7 +142,7 @@ export function* run(input: ResolvedInput<"graph">): Generator<Step<GraphState>>
         frame(null),
         9,
         { settled: done.size },
-        `Every unsettled node is still at ∞ — they cannot be reached from ${nodeLabel(source)}`,
+        `Every unsettled node is still at ∞, so none of them can be reached from ${nodeLabel(source)}`,
       );
       break;
     }

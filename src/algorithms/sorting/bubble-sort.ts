@@ -75,7 +75,7 @@ export function* run(input: Item[]): Generator<Step<Item[]>> {
           [hl("swap", a[j].id, a[j + 1].id), sortedFrom(n - i)],
           [6, 7],
           { i, j, swapped },
-          `Swap — ${a[j + 1].value} moves right past ${a[j].value}`,
+          `Swap: ${a[j + 1].value} moves right past ${a[j].value}`,
         );
       }
     }

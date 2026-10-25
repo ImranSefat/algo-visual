@@ -3,7 +3,7 @@ import { ogImage, ogSize } from "@/lib/og";
 
 export const size = ogSize;
 export const contentType = "image/png";
-export const alt = "algo·visual — see algorithms think";
+export const alt = "algo·visual: see algorithms think";
 
 export default function Image() {
   return ogImage({

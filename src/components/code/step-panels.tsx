@@ -28,7 +28,7 @@ export function VariablesPanel() {
   return (
     <Panel title="Variables">
       <div className="flex min-h-7 flex-wrap gap-1.5">
-        {entries.length === 0 && <span className="text-xs text-muted-foreground">—</span>}
+        {entries.length === 0 && <span className="text-xs text-muted-foreground">none</span>}
         {entries.map(([name, value]) => (
           <motion.span
             key={`${name}=${String(value)}`}

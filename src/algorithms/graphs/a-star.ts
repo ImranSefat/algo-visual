@@ -127,7 +127,7 @@ export function* run(input: ResolvedInput<"grid">): Generator<Step<GridState>> {
         frame(hl("found", cellId(end))),
         13,
         vars,
-        `The end ${grid.name(end)} comes off the queue with cost ${gc} — now follow the prev links back`,
+        `The end ${grid.name(end)} comes off the queue with cost ${gc}. Now follow the prev links back`,
       );
       const path = [end];
       while (prev.has(path[0])) {
@@ -181,6 +181,6 @@ export function* run(input: ResolvedInput<"grid">): Generator<Step<GridState>> {
     frame(hl("notfound", cellId(end))),
     24,
     { pathLength: 0, cost: "∞" },
-    `The open set is empty and ${grid.name(end)} was never reached — there is no path`,
+    `The open set is empty and ${grid.name(end)} was never reached, so there is no path`,
   );
 }

@@ -25,7 +25,7 @@ function parseEdges(text: string, nodes: number, weighted: boolean): GraphInputS
   const edges: GraphInputSpec["edges"] = [];
   for (const raw of text.split(",").map((s) => s.trim()).filter(Boolean)) {
     const m = /^([A-Za-z])\s*[-–>]\s*([A-Za-z])(?:\s+(\d{1,2}))?$/.exec(raw);
-    if (!m) return `Can't read "${raw}" — use the form A-B 4`;
+    if (!m) return `Can't read "${raw}". Use the form A-B 4`;
     const a = m[1].toUpperCase().charCodeAt(0) - 65;
     const b = m[2].toUpperCase().charCodeAt(0) - 65;
     if (a >= nodes || b >= nodes) return `"${raw}" uses a node beyond ${label(nodes - 1)}`;
@@ -101,7 +101,7 @@ export function GraphControls({
           </Field>
         )}
       </div>
-      <Field label={`Edges${spec.directed ? " (directed: A>B)" : ""}`} hint={weighted ? "weights 1–99" : undefined}>
+      <Field label={`Edges${spec.directed ? " (directed: A>B)" : ""}`} hint={weighted ? "weights 1 to 99" : undefined}>
         <form
           className="flex gap-2"
           onSubmit={(e) => {

@@ -50,7 +50,7 @@ export const meta = {
   category: "structures",
   renderer: "stack",
   description:
-    "Last in, first out: push adds on top and pop takes from the top, both in O(1). Stacks power undo, expression parsing, depth-first search and the call stack itself; a bounded stack also shows overflow and underflow.",
+    "Last in, first out: push adds on top and pop takes from the top, both in O(1). Undo, expression parsing, depth-first search and the call stack itself all use stacks. This one has a fixed capacity, so it can also overflow and underflow.",
   complexity: {
     time: { best: "O(1)", average: "O(1)", worst: "O(1)" },
     space: "O(n)",
@@ -86,7 +86,7 @@ export function* run({ initial, ops }: ResolvedInput<"sequence">): Generator<Ste
     if (op.op === "push" || op.op === "insert") {
       const value = op.value ?? 0;
       if (items.length === CAPACITY) {
-        yield t.step(state(), [hl("notfound", ...items.map((x) => x.id))], 6, { value, size: items.length }, `${opLabel(op)}: the stack is full — overflow, ${value} is rejected`);
+        yield t.step(state(), [hl("notfound", ...items.map((x) => x.id))], 6, { value, size: items.length }, `${opLabel(op)}: the stack is full, so ${value} is rejected (overflow)`);
         continue;
       }
       const item = make(value);
@@ -95,7 +95,7 @@ export function* run({ initial, ops }: ResolvedInput<"sequence">): Generator<Ste
       yield t.step(state(), [hl("insert", item.id)], [6, 7], { value, size: items.length }, `${opLabel(op)}: ${value} goes on top`);
     } else if (op.op === "pop" || op.op === "delete") {
       if (items.length === 0) {
-        yield t.step(state(), [], 11, { size: 0 }, `${opLabel(op)}: the stack is empty — underflow`);
+        yield t.step(state(), [], 11, { size: 0 }, `${opLabel(op)}: the stack is empty (underflow)`);
         continue;
       }
       const item = top()!;
@@ -106,7 +106,7 @@ export function* run({ initial, ops }: ResolvedInput<"sequence">): Generator<Ste
     } else if (op.op === "search") {
       yield t.step(state(), top() ? [hl("found", top()!.id)] : [], 16, { top: top()?.value ?? "none" }, top() ? `peek(): only the top (${top()!.value}) is visible` : "peek(): the stack is empty");
     } else {
-      yield t.step(state(), [], 1, {}, `${opLabel(op)} is not a stack operation — skipped`);
+      yield t.step(state(), [], 1, {}, `Skipping ${opLabel(op)}: it is not a stack operation`);
     }
   }
   yield t.step(state(), [], 1, { size: items.length }, `Done: ${items.length} value${items.length === 1 ? "" : "s"} on the stack`);

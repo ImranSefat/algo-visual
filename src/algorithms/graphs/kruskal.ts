@@ -135,7 +135,7 @@ export function* run(input: ResolvedInput<"graph">): Generator<Step<GraphState>>
         frame(),
         12,
         { totalWeight: total(), edges: mst.length },
-        `The tree has ${mst.length} edges — one fewer than the ${g.size} nodes — so every node is connected`,
+        `The tree has ${mst.length} edges, one fewer than the ${g.size} nodes, so every node is connected`,
       );
       break;
     }

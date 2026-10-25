@@ -50,7 +50,7 @@ export const meta = {
   category: "structures",
   renderer: "queue",
   description:
-    "First in, first out: enqueue joins at the rear and dequeue leaves from the front. Keeping a moving head index instead of shifting the array makes both operations O(1); queues drive breadth-first search, schedulers and buffers.",
+    "First in, first out: enqueue joins at the rear and dequeue leaves from the front. Keeping a moving head index instead of shifting the array makes both operations O(1). Breadth-first search, schedulers and buffers all use queues.",
   complexity: {
     time: { best: "O(1)", average: "O(1)", worst: "O(1)" },
     space: "O(n)",
@@ -101,7 +101,7 @@ export function* run({ initial, ops }: ResolvedInput<"sequence">): Generator<Ste
     } else if (op.op === "search") {
       yield t.step(state(), ends(), 17, { size: items.length }, `${items.length} value${items.length === 1 ? "" : "s"} waiting${items.length ? `; the front is ${items[0].value}` : ""}`);
     } else {
-      yield t.step(state(), [], 1, {}, `${opLabel(op)} is not a queue operation — skipped`);
+      yield t.step(state(), [], 1, {}, `Skipping ${opLabel(op)}: it is not a queue operation`);
     }
   }
   yield t.step(state(), ends(), 1, { size: items.length }, `Done: ${items.length} value${items.length === 1 ? "" : "s"} in the queue`);

@@ -78,7 +78,7 @@ export const meta = {
   category: "structures",
   renderer: "array-bars",
   description:
-    "A contiguous block of slots with a size and a capacity. Inserting or deleting in the middle shifts every later element one slot over, and a full array doubles its capacity — so appends are amortised O(1) while middle edits cost O(n).",
+    "A contiguous block of slots with a size and a capacity. Inserting or deleting in the middle shifts every later element one slot over, and a full array doubles its capacity. That keeps appends at amortised O(1), while edits in the middle cost O(n).",
   complexity: {
     time: { best: "O(1)", average: "O(n)", worst: "O(n)" },
     space: "O(n)",
@@ -116,14 +116,14 @@ export function* run({ initial, ops }: ResolvedInput<"sequence">): Generator<Ste
       const index = op.index ?? size;
       yield t.step(state({ index }), [], 5, { index, value, size, capacity }, `${opLabel(op)}: insert ${value} at index ${index}`);
       if (index < 0 || index > size) {
-        yield t.step(state(), [], 5, { index, size }, `Index ${index} is outside 0…${size} — nothing changes`);
+        yield t.step(state(), [], 5, { index, size }, `Index ${index} is outside 0…${size} , so nothing changes`);
         continue;
       }
       if (size === capacity) {
         capacity *= 2;
         data = [...data, ...Array<Slot>(capacity - data.length).fill(null)];
         t.count("resizes");
-        yield t.step(state(), [hl("range", ...live())], [28, 31], { size, capacity }, `Full — allocate ${capacity} slots and copy the ${size} values over`);
+        yield t.step(state(), [hl("range", ...live())], [28, 31], { size, capacity }, `The array is full: allocate ${capacity} slots and copy the ${size} values over`);
       }
       for (let k = size; k > index; k--) {
         data[k] = data[k - 1];
@@ -139,7 +139,7 @@ export function* run({ initial, ops }: ResolvedInput<"sequence">): Generator<Ste
       const index = op.index ?? size - 1;
       yield t.step(state({ index }), [], 14, { index, size }, `${opLabel(op)}: delete the value at index ${index}`);
       if (index < 0 || index >= size) {
-        yield t.step(state(), [], 14, { index, size }, `Index ${index} is outside 0…${size - 1} — nothing changes`);
+        yield t.step(state(), [], 14, { index, size }, `Index ${index} is outside 0…${size - 1} , so nothing changes`);
         continue;
       }
       const removed = data[index]!;
@@ -168,7 +168,7 @@ export function* run({ initial, ops }: ResolvedInput<"sequence">): Generator<Ste
       }
       if (found === -1) yield t.step(state(), [hl("notfound", ...live())], 25, { value, result: -1 }, `${value} is not in the array`);
     } else {
-      yield t.step(state(), [], 1, {}, `${opLabel(op)} is not an array operation — skipped`);
+      yield t.step(state(), [], 1, {}, `Skipping ${opLabel(op)}: it is not an array operation`);
     }
   }
   yield t.step(state(), [], 1, { size, capacity }, `Done: ${size} values in ${capacity} slots`);

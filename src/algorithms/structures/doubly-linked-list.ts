@@ -224,7 +224,7 @@ export function* run({ initial, ops }: ResolvedInput<"sequence">): Generator<Ste
         pointers = { cur: nodes[cur]?.id ?? null };
       }
       if (cur === nodes.length) {
-        yield t.step(state(), [hl("notfound", ...nodes.map((n) => n.id))], 38, { value, result: false }, `${value} is not in the list — nothing to delete`);
+        yield t.step(state(), [hl("notfound", ...nodes.map((n) => n.id))], 38, { value, result: false }, `${value} is not in the list, so there is nothing to delete`);
         continue;
       }
       const victim = nodes[cur];
@@ -264,10 +264,10 @@ export function* run({ initial, ops }: ResolvedInput<"sequence">): Generator<Ste
       }
       if (!found) {
         pointers = {};
-        yield t.step(state(), [hl("notfound", ...nodes.map((n) => n.id))], 53, { value, result: false }, `Reached null — ${value} is not in the list`);
+        yield t.step(state(), [hl("notfound", ...nodes.map((n) => n.id))], 53, { value, result: false }, `Reached null, so ${value} is not in the list`);
       }
     } else {
-      yield t.step(state(), [], 7, {}, `${opLabel(op)} is not a list operation — skipped`);
+      yield t.step(state(), [], 7, {}, `Skipping ${opLabel(op)}: it is not a list operation`);
     }
   }
   pointers = {};

@@ -96,7 +96,7 @@ export const meta = {
   category: "structures",
   renderer: "linked-list",
   description:
-    "Each node stores a value and a pointer to the next node, so inserting or deleting only rewires a pointer or two — no shifting. The price is access: reaching position i means walking i links from the head.",
+    "Each node stores a value and a pointer to the next node, so inserting or deleting rewires a pointer or two instead of shifting elements. The price is access: reaching position i means walking i links from the head.",
   complexity: {
     time: { best: "O(1)", average: "O(n)", worst: "O(n)" },
     space: "O(n)",
@@ -185,7 +185,7 @@ export function* run({ initial, ops }: ResolvedInput<"sequence">): Generator<Ste
         yield t.step(state(), nodes[cur] ? [hl("current", nodes[cur].id)] : [], [25, 26], { value }, nodes[cur] ? `prev ← cur; cur ← ${nodes[cur].value}` : "cur ran off the end of the list");
       }
       if (cur === nodes.length) {
-        yield t.step(state(), [hl("notfound", ...nodes.map((n) => n.id))], 28, { value, result: false }, `${value} is not in the list — nothing to delete`);
+        yield t.step(state(), [hl("notfound", ...nodes.map((n) => n.id))], 28, { value, result: false }, `${value} is not in the list, so there is nothing to delete`);
         continue;
       }
       const victim = nodes[cur];
@@ -215,10 +215,10 @@ export function* run({ initial, ops }: ResolvedInput<"sequence">): Generator<Ste
       }
       if (!found) {
         pointers = {};
-        yield t.step(state(), [hl("notfound", ...nodes.map((n) => n.id))], 40, { value, result: false }, `Reached null — ${value} is not in the list`);
+        yield t.step(state(), [hl("notfound", ...nodes.map((n) => n.id))], 40, { value, result: false }, `Reached null, so ${value} is not in the list`);
       }
     } else {
-      yield t.step(state(), [], 5, {}, `${opLabel(op)} is not a list operation — skipped`);
+      yield t.step(state(), [], 5, {}, `Skipping ${opLabel(op)}: it is not a list operation`);
     }
   }
   pointers = {};

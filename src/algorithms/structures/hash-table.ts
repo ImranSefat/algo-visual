@@ -92,7 +92,7 @@ export const meta = {
   category: "structures",
   renderer: "hash-table",
   description:
-    "Maps each key to one of m buckets with hash(k) = k mod m and keeps colliding keys in a chain. With a good hash and a low load factor every chain is short, so insert, search and delete take O(1) on average — but O(n) if everything collides.",
+    "Maps each key to one of m buckets with hash(k) = k mod m and keeps colliding keys in a chain. With a good hash and a low load factor every chain is short, so insert, search and delete take O(1) on average. If every key collides, they take O(n).",
   complexity: {
     time: { best: "O(1)", average: "O(1)", worst: "O(n)" },
     space: "O(n + m)",
@@ -165,7 +165,7 @@ export function* run({ initial, ops }: ResolvedInput<"sequence">): Generator<Ste
     if (name === "insert") {
       if (index !== -1) {
         incoming = undefined;
-        yield t.step(state(), [hl("found", chain[index].id)], 14, { key, h, result: false }, `${key} is already in bucket ${h} — no duplicate inserted`);
+        yield t.step(state(), [hl("found", chain[index].id)], 14, { key, h, result: false }, `${key} is already in bucket ${h}, so it isn't added twice`);
         continue;
       }
       if (chain.length > 0) t.count("collisions");
@@ -175,7 +175,7 @@ export function* run({ initial, ops }: ResolvedInput<"sequence">): Generator<Ste
     } else if (name === "delete") {
       incoming = undefined;
       if (index === -1) {
-        yield t.step(state(), [hl("notfound", bucketId(h))], 29, { key, h, result: false }, `${key} is not in bucket ${h} — nothing to delete`);
+        yield t.step(state(), [hl("notfound", bucketId(h))], 29, { key, h, result: false }, `${key} is not in bucket ${h}, so there is nothing to delete`);
         continue;
       }
       const victim = chain[index];

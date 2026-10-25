@@ -82,7 +82,7 @@ export function* run(input: ResolvedInput<"graph">): Generator<Step<GraphState>>
     table: {
       title: "Keys",
       columns: ["Node", "Key", "Parent", "In tree"],
-      rows: key.map((k, v) => [nodeLabel(v), fmt(k), parent[v] ? nodeLabel(parent[v].from) : "—", inTree.has(v) ? "✓" : ""]),
+      rows: key.map((k, v) => [nodeLabel(v), fmt(k), parent[v] ? nodeLabel(parent[v].from) : "-", inTree.has(v) ? "✓" : ""]),
     },
     output: { title: "MST edges", items: mst.map(edgeName) },
   });
@@ -105,7 +105,7 @@ export function* run(input: ResolvedInput<"graph">): Generator<Step<GraphState>>
         frame(null),
         10,
         { totalWeight: total(), edges: mst.length },
-        `The remaining nodes have no edge to the tree — the graph is disconnected`,
+        `The remaining nodes have no edge to the tree, so the graph is disconnected`,
       );
       break;
     }

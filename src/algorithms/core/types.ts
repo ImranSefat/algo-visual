@@ -63,7 +63,7 @@ export type AlgorithmMeta = {
   name: string;
   category: Category;
   renderer: RendererKind;
-  /** 2–3 sentences. */
+  /** Two or three sentences. */
   description: string;
   complexity: Complexity;
   /** Display source. Same logic as the generator, no yield lines. Line numbers in Steps refer to THIS string. */

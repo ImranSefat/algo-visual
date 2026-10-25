@@ -60,7 +60,7 @@ export const meta = {
   category: "graphs",
   renderer: "grid-graph",
   description:
-    "Depth-first search keeps going in one direction — up first, then right, down and left — and only backtracks to the most recent unexplored cell on its stack when it hits a dead end. It always finds a path if one exists, but usually a long, winding one rather than the shortest.",
+    "Depth-first search keeps going in one direction (up first, then right, down and left) and only backtracks to the most recent unexplored cell on its stack when it hits a dead end. It always finds a path if one exists, but usually a long, winding one rather than the shortest.",
   complexity: {
     time: { best: "O(1)", average: "O(V + E)", worst: "O(V + E)" },
     space: "O(V + E)",
@@ -96,7 +96,7 @@ export function* run(input: ResolvedInput<"grid">): Generator<Step<GridState>> {
         frame(hl("found", cellId(end))),
         9,
         { cell: grid.name(cell), stack: stack.length },
-        `Popped the end ${grid.name(end)} — now follow the prev links back to the start`,
+        `Popped the end ${grid.name(end)} . Now follow the prev links back to the start`,
       );
       const path = [end];
       while (prev.has(path[0])) {
@@ -115,7 +115,7 @@ export function* run(input: ResolvedInput<"grid">): Generator<Step<GridState>> {
         frame(hl("path", ...path.map(cellId)), hl("found", cellId(end))),
         23,
         { pathLength: path.length, visited: closed.length + 1 },
-        `DFS found a path of ${path.length} cells — a valid route, but not necessarily the shortest`,
+        `DFS found a path of ${path.length} cells. It is a valid route, but not necessarily the shortest`,
       );
       return;
     }
@@ -145,6 +145,6 @@ export function* run(input: ResolvedInput<"grid">): Generator<Step<GridState>> {
     frame(hl("notfound", cellId(end))),
     17,
     { pathLength: 0, visited: closed.length },
-    `The stack is empty and ${grid.name(end)} was never reached — there is no path`,
+    `The stack is empty and ${grid.name(end)} was never reached, so there is no path`,
   );
 }

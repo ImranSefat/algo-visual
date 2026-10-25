@@ -50,7 +50,7 @@ export function PlaybackClock() {
   return null;
 }
 
-/** Space / arrows / Home / End / 1–6 / R for whichever visualizer stores are in context. */
+/** Space, arrows, Home, End, 1 to 6 and R for whichever visualizer stores are in context. */
 export function PlaybackShortcuts() {
   const playback = usePlaybackStore();
   const input = useInputStore();

@@ -22,11 +22,11 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "algo·visual — see algorithms think",
+    default: "algo·visual: see algorithms think",
     template: "%s · algo·visual",
   },
   description:
-    "Interactive data-structures and algorithms visualizer: smooth animations, a scrubbable timeline, and the real source code highlighted line by line.",
+    "Step through 36 algorithms and data structures one operation at a time, with the real source code highlighted line by line.",
 };
 
 const paletteItems: PaletteItem[] = algorithmList.map((m) => ({

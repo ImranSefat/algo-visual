@@ -91,7 +91,7 @@ export function ArrayControls({
         <Shuffle /> Randomise <Kbd className="ml-1 bg-background/60">R</Kbd>
       </Button>
 
-      <Field label="Custom values" className="sm:col-span-3" hint={`${LIMITS.customLength[0]}–${LIMITS.customLength[1]} whole numbers, ${LIMITS.value[0]}–${LIMITS.value[1]}`}>
+      <Field label="Custom values" className="sm:col-span-3" hint={`${LIMITS.customLength[0]} to ${LIMITS.customLength[1]} whole numbers, each ${LIMITS.value[0]} to ${LIMITS.value[1]}`}>
         <form
           className="flex gap-2"
           onSubmit={(e) => {

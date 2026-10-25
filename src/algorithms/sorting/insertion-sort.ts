@@ -34,7 +34,7 @@ export const meta = {
   category: "sorting",
   renderer: "array-bars",
   description:
-    "Grows a sorted prefix one element at a time: each new key is shifted left past every larger element until it reaches its place. Very fast on nearly-sorted input, which is why hybrid sorts use it for small runs.",
+    "Grows a sorted prefix one element at a time: each new key is shifted left past every larger element until it reaches its place. It is very fast on nearly sorted input, which is why hybrid sorts use it for small runs.",
   complexity: {
     time: { best: "O(n)", average: "O(n²)", worst: "O(n²)" },
     space: "O(1)",

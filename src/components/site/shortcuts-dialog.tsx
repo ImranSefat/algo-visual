@@ -14,7 +14,7 @@ const SHORTCUTS: [keys: string[], action: string][] = [
   [["←"], "Step back"],
   [["Home"], "First step"],
   [["End"], "Last step"],
-  [["1", "–", "6"], "Speed 0.25× … 8×"],
+  [["1", "to", "6"], "Speed 0.25× … 8×"],
   [["R"], "Randomise input"],
   [["⌘", "K"], "Search algorithms"],
   [["?"], "This help"],
@@ -47,7 +47,7 @@ export function ShortcutsDialog() {
             <div key={action} className="contents">
               <dt>
                 <KbdGroup>
-                  {keys.map((k) => (k === "–" ? <span key={k} className="text-muted-foreground">–</span> : <Kbd key={k}>{k}</Kbd>))}
+                  {keys.map((k) => (k === "to" ? <span key={k} className="text-xs text-muted-foreground">to</span> : <Kbd key={k}>{k}</Kbd>))}
                 </KbdGroup>
               </dt>
               <dd className="text-muted-foreground">{action}</dd>
@@ -59,10 +59,10 @@ export function ShortcutsDialog() {
   );
 }
 
-export function ShortcutsButton() {
+export function ShortcutsButton({ className }: { className?: string }) {
   const setOpen = useUI((s) => s.setShortcutsOpen);
   return (
-    <Button variant="ghost" size="icon" onClick={() => setOpen(true)} aria-label="Keyboard shortcuts">
+    <Button variant="ghost" size="icon" onClick={() => setOpen(true)} aria-label="Keyboard shortcuts" className={className}>
       <Keyboard />
     </Button>
   );

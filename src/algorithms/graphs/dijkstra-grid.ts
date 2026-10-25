@@ -70,7 +70,7 @@ export const meta = {
   category: "graphs",
   renderer: "grid-graph",
   description:
-    "Dijkstra's algorithm always expands the open cell with the smallest known distance, so on a weighted grid it finds the cheapest path rather than the one with fewest moves. Entering a cell costs its weight — the mud patches here cost 5 — and the optimal route detours around them when that is cheaper.",
+    "Dijkstra's algorithm always expands the open cell with the smallest known distance, so on a weighted grid it finds the cheapest path rather than the one with fewest moves. Entering a cell costs its weight (the mud patches here cost 5), and the optimal route detours around them when that is cheaper.",
   complexity: {
     time: { best: "O(1)", average: "O((V + E) log V)", worst: "O((V + E) log V)" },
     space: "O(V)",
@@ -123,7 +123,7 @@ export function* run(input: ResolvedInput<"grid">): Generator<Step<GridState>> {
         frame(hl("found", cellId(end))),
         11,
         { cell: grid.name(cell), dist: d },
-        `The end ${grid.name(end)} is settled at cost ${d} — now follow the prev links back`,
+        `The end ${grid.name(end)} is settled at cost ${d}. Now follow the prev links back`,
       );
       const path = [end];
       while (prev.has(path[0])) {
@@ -177,6 +177,6 @@ export function* run(input: ResolvedInput<"grid">): Generator<Step<GridState>> {
     frame(hl("notfound", cellId(end))),
     22,
     { pathLength: 0, cost: "∞" },
-    `No open cells are left and ${grid.name(end)} was never reached — there is no path`,
+    `No open cells are left and ${grid.name(end)} was never reached, so there is no path`,
   );
 }

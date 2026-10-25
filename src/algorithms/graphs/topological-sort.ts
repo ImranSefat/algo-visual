@@ -168,7 +168,7 @@ export function* run(input: ResolvedInput<"graph">): Generator<Step<GraphState>>
       frame(null, hl("notfound", ...stuck.map(nodeId))),
       15,
       { order: orderVar(), cycle: true },
-      `${stuck.map(nodeLabel).join(", ")} still wait on each other — the graph has a cycle, so no topological order exists`,
+      `${stuck.map(nodeLabel).join(", ")} still wait on each other. The graph has a cycle, so no topological order exists`,
     );
     return;
   }

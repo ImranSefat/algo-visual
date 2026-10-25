@@ -78,7 +78,7 @@ export const meta = {
   category: "structures",
   renderer: "heap",
   description:
-    "A complete binary tree stored in an array where every parent is ≤ its children, so the minimum is always at the root. Insert sifts the new value up; extract-min moves the last value to the root and sifts it down. The backbone of priority queues and Dijkstra.",
+    "A complete binary tree stored in an array where every parent is ≤ its children, so the minimum is always at the root. Insert sifts the new value up; extract-min moves the last value to the root and sifts it down. Most priority queues, including the one inside Dijkstra's algorithm, are built this way.",
   complexity: {
     time: { best: "O(1)", average: "O(log n)", worst: "O(log n)" },
     space: "O(n)",
@@ -129,7 +129,7 @@ export function* run({ initial, ops }: ResolvedInput<"sequence">): Generator<Ste
         if (a[p].value <= a[i].value) break;
         [a[p], a[i]] = [a[i], a[p]];
         t.count("swaps");
-        yield t.step(state({ i: p }), [hl("swap", a[p].id, a[i].id)], [10, 11], { value: item.value, i: p }, `No — swap: ${a[p].value} moves up`);
+        yield t.step(state({ i: p }), [hl("swap", a[p].id, a[i].id)], [10, 11], { value: item.value, i: p }, `No, so swap them: ${a[p].value} moves up`);
         i = p;
       }
       yield t.step(state(), [hl("found", a[0].id)], 13, { size: a.length, min: a[0].value }, `Heap order restored; the minimum is ${a[0].value}`);
@@ -151,7 +151,7 @@ export function* run({ initial, ops }: ResolvedInput<"sequence">): Generator<Ste
           let s = i;
           const kids = [l, r].filter((c) => c < a.length);
           if (kids.length === 0) {
-            yield t.step(state({ i }), [hl("current", a[i].id)], 26, { i }, `${a[i].value} is a leaf — done`);
+            yield t.step(state({ i }), [hl("current", a[i].id)], 26, { i }, `${a[i].value} is a leaf, so it stops here`);
             break;
           }
           t.count("comparisons", kids.length);
@@ -159,7 +159,7 @@ export function* run({ initial, ops }: ResolvedInput<"sequence">): Generator<Ste
           if (l < a.length && a[l].value < a[s].value) s = l;
           if (r < a.length && a[r].value < a[s].value) s = r;
           if (s === i) {
-            yield t.step(state({ i }), [hl("current", a[i].id)], 26, { i }, `${a[i].value} is not larger than its children — stop`);
+            yield t.step(state({ i }), [hl("current", a[i].id)], 26, { i }, `${a[i].value} is not larger than its children, so it stops here`);
             break;
           }
           [a[i], a[s]] = [a[s], a[i]];
@@ -172,7 +172,7 @@ export function* run({ initial, ops }: ResolvedInput<"sequence">): Generator<Ste
       }
       yield t.step(state(), a.length ? [hl("found", a[0].id)] : [], 31, { returned: min.value, size: a.length }, `Return ${min.value}`);
     } else {
-      yield t.step(state(), [], 1, {}, `${opLabel(op)} is not a heap operation — skipped`);
+      yield t.step(state(), [], 1, {}, `Skipping ${opLabel(op)}: it is not a heap operation`);
     }
   }
   yield t.step(state(), a.length ? [hl("found", a[0].id)] : [], 1, { size: a.length }, `Done: ${a.length} value${a.length === 1 ? "" : "s"} in the heap`);

@@ -127,7 +127,7 @@ export function* run(input: ResolvedInput<"graph">): Generator<Step<GraphState>>
       [13, 14],
       { node: nodeLabel(node), stack: stackVar() },
       parent
-        ? `Every neighbour of ${nodeLabel(node)} is done — backtrack to ${nodeLabel(parent.node)}`
+        ? `Every neighbour of ${nodeLabel(node)} is done, so backtrack to ${nodeLabel(parent.node)}`
         : `Every neighbour of ${nodeLabel(node)} is done and the call stack is empty`,
     );
     finished.push(node);

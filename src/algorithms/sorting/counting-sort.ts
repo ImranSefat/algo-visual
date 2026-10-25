@@ -34,7 +34,7 @@ export const meta = {
   category: "sorting",
   renderer: "array-bars-aux",
   description:
-    "Never compares elements: it tallies how often each value occurs, turns the tally into prefix sums (each value's end position), then places every element straight into the output. Linear time when the value range k is small.",
+    "Never compares elements: it tallies how often each value occurs, turns the tally into prefix sums (each value's end position), then places every element straight into the output. It runs in linear time when the value range k is small.",
   complexity: {
     time: { best: "O(n + k)", average: "O(n + k)", worst: "O(n + k)" },
     space: "O(n + k)",
@@ -112,6 +112,6 @@ export function* run(input: Item[]): Generator<Step<AuxState>> {
     out[i] = null;
   }
   t.count("writes", n);
-  yield t.step(state(), [hl("sorted", ...main.map((x) => x!.id))], 10, { n }, "Copy the output back — sorted");
+  yield t.step(state(), [hl("sorted", ...main.map((x) => x!.id))], 10, { n }, "Copy the output back into the array");
   yield t.step(state(), [hl("sorted", ...main.map((x) => x!.id))], 11, { n }, "Sorted without a single comparison");
 }

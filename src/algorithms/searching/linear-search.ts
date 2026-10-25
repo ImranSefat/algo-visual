@@ -23,7 +23,7 @@ export const meta = {
   category: "searching",
   renderer: "array-bars",
   description:
-    "Checks every element from left to right until it finds the target or runs out of array. Works on unsorted data and needs no preprocessing, but may look at all n elements.",
+    "Checks every element from left to right until it finds the target or runs out of array. It works on unsorted data without any preparation, but it may look at all n elements.",
   complexity: { time: { best: "O(1)", average: "O(n)", worst: "O(n)" }, space: "O(1)" },
   source,
   pseudocode,

@@ -130,7 +130,7 @@ export function* run({ ops }: ResolvedInput<"sequence">): Generator<Step<TreeSta
   for (const op of ops) {
     const word = op.word ?? String(op.value ?? "");
     if (!word) {
-      yield t.step(snap(), [], 6, {}, `${opLabel(op)} has no word — skipped`);
+      yield t.step(snap(), [], 6, {}, `Skipping ${opLabel(op)}: it has no word`);
       continue;
     }
     if (op.op === "insert") {
@@ -166,7 +166,7 @@ export function* run({ ops }: ResolvedInput<"sequence">): Generator<Step<TreeSta
         const childId = node.children.get(ch);
         t.count("steps");
         if (!childId) {
-          yield t.step(snap({ label: progress(word, i), at: node.id }), [hl("visited", ...path), hl("notfound", node.id)], [21, 22], { word, ch, i, result: false }, `No '${ch}' after "${word.slice(0, i)}" — "${word}" is not stored`);
+          yield t.step(snap({ label: progress(word, i), at: node.id }), [hl("visited", ...path), hl("notfound", node.id)], [21, 22], { word, ch, i, result: false }, `No '${ch}' after "${word.slice(0, i)}", so "${word}" is not stored`);
           found = false;
           break;
         }
@@ -180,11 +180,11 @@ export function* run({ ops }: ResolvedInput<"sequence">): Generator<Step<TreeSta
           [hl("visited", ...path.slice(0, -1)), hl(node.end ? "found" : "notfound", node.id)],
           25,
           { word, result: node.end },
-          node.end ? `"${word}" is stored` : `"${word}" is only a prefix — no word ends here`,
+          node.end ? `"${word}" is stored` : `"${word}" is only a prefix: no stored word ends here`,
         );
       }
     } else {
-      yield t.step(snap(), [], 6, {}, `${opLabel(op)} is not a trie operation — skipped`);
+      yield t.step(snap(), [], 6, {}, `Skipping ${opLabel(op)}: it is not a trie operation`);
     }
   }
   const stored = words();

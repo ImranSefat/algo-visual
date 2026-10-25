@@ -52,7 +52,7 @@ export const meta = {
   category: "sorting",
   renderer: "heap",
   description:
-    "Arranges the array as a binary max-heap, then repeatedly swaps the root (the maximum) to the end and sifts the new root down to restore the heap. In-place and O(n log n) in every case, though not stable.",
+    "Arranges the array as a binary max-heap, then repeatedly swaps the root (the maximum) to the end and sifts the new root down to restore the heap. It sorts in place in O(n log n) every time, but it isn't stable.",
   complexity: {
     time: { best: "O(n log n)", average: "O(n log n)", worst: "O(n log n)" },
     space: "O(1)",
@@ -82,7 +82,7 @@ export function* run(input: Item[]): Generator<Step<HeapState>> {
       let largest = i;
       const children = [l, r].filter((c) => c < size);
       if (children.length === 0) {
-        yield t.step(state({ i }), [hl("current", a[i].id), tail()], 17, { i, size }, `${a[i].value} is a leaf — heap property holds`);
+        yield t.step(state({ i }), [hl("current", a[i].id), tail()], 17, { i, size }, `${a[i].value} is a leaf, so the heap property holds`);
         return;
       }
       t.count("comparisons", children.length);
@@ -96,7 +96,7 @@ export function* run(input: Item[]): Generator<Step<HeapState>> {
       if (l < size && a[l].value > a[largest].value) largest = l;
       if (r < size && a[r].value > a[largest].value) largest = r;
       if (largest === i) {
-        yield t.step(state({ i }), [hl("current", a[i].id), tail()], 17, { i, largest, size }, `${a[i].value} is not smaller than its children — stop`);
+        yield t.step(state({ i }), [hl("current", a[i].id), tail()], 17, { i, largest, size }, `${a[i].value} is not smaller than its children, so it stops here`);
         return;
       }
       [a[i], a[largest]] = [a[largest], a[i]];

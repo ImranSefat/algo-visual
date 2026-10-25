@@ -185,7 +185,7 @@ export function NodeGraph({ step, duration, compact }: RendererProps<GraphState>
             <div className="min-w-0 flex-1 rounded-xl border p-3 @lg:flex-none">
               <div className="mb-2 font-medium text-muted-foreground">{output.title}</div>
               <ol className="flex flex-wrap gap-1.5 font-mono">
-                {output.items.length === 0 && <li className="text-muted-foreground">—</li>}
+                {output.items.length === 0 && <li className="text-muted-foreground">none yet</li>}
                 {output.items.map((item, i) => (
                   <motion.li
                     key={`${i}-${item}`}

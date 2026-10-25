@@ -50,7 +50,7 @@ export const meta = {
   category: "sorting",
   renderer: "array-bars",
   description:
-    "Picks the last element as a pivot and partitions the range so smaller elements land to its left (Lomuto scheme); the pivot is then in its final place and both sides are sorted recursively. Fast in practice, but a bad pivot sequence degrades it to O(n²).",
+    "Picks the last element as a pivot and partitions the range so smaller elements land to its left (Lomuto scheme); the pivot is then in its final place and both sides are sorted recursively. It is fast in practice, but a bad run of pivots slows it to O(n²).",
   complexity: {
     time: { best: "O(n log n)", average: "O(n log n)", worst: "O(n²)" },
     space: "O(log n)",
@@ -113,7 +113,7 @@ export function* run(input: Item[]): Generator<Step<ArrayView>> {
       [hl("swap", pivot.id), range(lo, hi), finished()],
       18,
       { lo, hi, pivot: pivot.value, i },
-      `Move pivot ${pivot.value} to index ${i} — its final position`,
+      `Move pivot ${pivot.value} to index ${i}, its final position`,
     );
     return i;
   }

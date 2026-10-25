@@ -76,5 +76,5 @@ export function* run({ items, target }: ResolvedInput<"search">): Generator<Step
       yield t.step(view({ lo, mid, hi }), [range(lo, hi), out(lo, hi)], 7, { target, lo, mid, hi }, `${a[mid].value} > ${target}: discard the right half`);
     }
   }
-  yield t.step(view({}), [hl("notfound", ...a.map((x) => x.id))], 9, { target, lo, hi, result: -1 }, `The range is empty — ${target} is not in the array`);
+  yield t.step(view({}), [hl("notfound", ...a.map((x) => x.id))], 9, { target, lo, hi, result: -1 }, `The range is empty, so ${target} is not in the array`);
 }

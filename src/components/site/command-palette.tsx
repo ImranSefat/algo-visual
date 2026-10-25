@@ -1,6 +1,6 @@
 "use client";
 
-import { Columns2, Home, Keyboard, Moon, Search } from "lucide-react";
+import { Columns2, Home, Info, Keyboard, Moon, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -70,6 +70,9 @@ export function CommandPalette({ items }: { items: PaletteItem[] }) {
             <CommandItem value="compare side by side" onSelect={() => run(() => router.push("/compare"))}>
               <Columns2 /> Compare two algorithms
             </CommandItem>
+            <CommandItem value="about project author imran sefat" onSelect={() => run(() => router.push("/about"))}>
+              <Info /> About this project
+            </CommandItem>
             <CommandItem value="keyboard shortcuts help" onSelect={() => run(() => setShortcutsOpen(true))}>
               <Keyboard /> Keyboard shortcuts
             </CommandItem>
@@ -102,13 +105,14 @@ export function SearchButton() {
     <Button
       variant="outline"
       onClick={() => setOpen(true)}
-      className="h-8 gap-2 pr-1.5 text-muted-foreground sm:w-56 sm:justify-between"
+      // Icon-only until there is room for the full box next to the nav links.
+      className="size-8 gap-2 p-0 text-muted-foreground xl:w-56 xl:justify-between xl:pr-1.5 xl:pl-2.5"
       aria-label="Search algorithms"
     >
       <span className="flex items-center gap-2">
-        <Search /> <span className="hidden sm:inline">Search algorithms…</span>
+        <Search /> <span className="hidden xl:inline">Search algorithms…</span>
       </span>
-      <KbdGroup className="hidden sm:inline-flex">
+      <KbdGroup className="hidden xl:inline-flex">
         <Kbd>⌘</Kbd>
         <Kbd>K</Kbd>
       </KbdGroup>

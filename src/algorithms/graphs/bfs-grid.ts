@@ -93,7 +93,7 @@ export function* run(input: ResolvedInput<"grid">): Generator<Step<GridState>> {
         frame(hl("found", cellId(end))),
         7,
         { cell: grid.name(cell), queue: queue.length - head },
-        `Dequeued the end ${grid.name(end)} — now follow the prev links back to the start`,
+        `Dequeued the end ${grid.name(end)} . Now follow the prev links back to the start`,
       );
       const path = [end];
       while (prev.has(path[0])) {
@@ -143,6 +143,6 @@ export function* run(input: ResolvedInput<"grid">): Generator<Step<GridState>> {
     frame(hl("notfound", cellId(end))),
     15,
     { pathLength: 0, visited: closed.length },
-    `The queue is empty and ${grid.name(end)} was never reached — there is no path`,
+    `The queue is empty and ${grid.name(end)} was never reached, so there is no path`,
   );
 }

@@ -38,7 +38,7 @@ export const meta = {
   category: "sorting",
   renderer: "array-bars",
   description:
-    "Scans the unsorted suffix for its smallest element and swaps it to the front. After pass i the first i + 1 elements are final, so it makes at most n − 1 swaps — but always n²/2 comparisons.",
+    "Scans the unsorted suffix for its smallest element and swaps it to the front. After pass i the first i + 1 elements are final, so it makes at most n − 1 swaps but always about n²/2 comparisons.",
   complexity: {
     time: { best: "O(n²)", average: "O(n²)", worst: "O(n²)" },
     space: "O(1)",
@@ -83,7 +83,7 @@ export function* run(input: Item[]): Generator<Step<ArrayView>> {
           [hl("current", a[min].id), sorted(i)],
           6,
           { i, j, min },
-          `Yes — ${a[min].value} is the new minimum`,
+          `Yes, so ${a[min].value} is the new minimum`,
         );
       }
     }

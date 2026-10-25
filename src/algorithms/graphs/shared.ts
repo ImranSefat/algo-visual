@@ -3,7 +3,7 @@ import { edgeId, nodeId, type GraphEdge, type GraphNode, type GridState } from "
 
 // ---------- Grids ----------
 
-/** Cells of the inclusive rectangle (r0, c0)–(r1, c1); default inputs build walls and mud from these. */
+/** Cells of the inclusive rectangle from (r0, c0) to (r1, c1); default inputs build walls and mud from these. */
 export function block(r0: number, c0: number, r1: number, c1: number): Cell[] {
   const cells: Cell[] = [];
   for (let r = r0; r <= r1; r++) for (let c = c0; c <= c1; c++) cells.push([r, c]);
@@ -147,7 +147,7 @@ export function traversalInput(): GraphInputSpec {
 
 /**
  * Weighted graph shared by Prim and Kruskal: both find total weight 23, but in different orders,
- * and Kruskal has to reject two cycle-closing edges (B–C and D–F).
+ * and Kruskal has to reject two cycle-closing edges (B-C and D-F).
  */
 export function spanningInput(): GraphInputSpec {
   return {
@@ -235,6 +235,6 @@ export function buildGraph(
   };
 }
 
-/** "A–B" for undirected edges, "A → B" for directed ones. */
+/** "A-B" for undirected edges, "A → B" for directed ones. */
 export const linkName = (link: Pick<Link, "from" | "to">, directed: boolean) =>
-  `${nodeLabel(link.from)}${directed ? " → " : "–"}${nodeLabel(link.to)}`;
+  `${nodeLabel(link.from)}${directed ? " → " : "-"}${nodeLabel(link.to)}`;

@@ -105,7 +105,7 @@ export const meta = {
   category: "structures",
   renderer: "tree",
   description:
-    "Every key in a node's left subtree is smaller and every key in its right subtree is larger, so search, insert and delete each follow one root-to-leaf path. Deleting a node with two children swaps in its in-order successor. Fast when balanced, but sorted inserts degrade it to a linked list.",
+    "Every key in a node's left subtree is smaller and every key in its right subtree is larger, so search, insert and delete each follow one root-to-leaf path. Deleting a node with two children swaps in its in-order successor. It is fast when balanced, but inserting keys in sorted order turns it into a linked list.",
   complexity: {
     time: { best: "O(log n)", average: "O(log n)", worst: "O(n)" },
     space: "O(n)",
@@ -147,7 +147,7 @@ export function* run({ initial, ops }: ResolvedInput<"sequence">): Generator<Ste
 
   function* remove(id: string | null, key: number, link: (id: string | null) => void): Generator<Step<TreeState>, void> {
     if (!id) {
-      yield t.step(f.toState({ label: String(key), at: null }), [], 33, { key }, `Reached an empty subtree — ${key} is not in the tree`);
+      yield t.step(f.toState({ label: String(key), at: null }), [], 33, { key }, `Reached an empty subtree, so ${key} is not in the tree`);
       return;
     }
     const node = f.get(id);
@@ -203,7 +203,7 @@ export function* run({ initial, ops }: ResolvedInput<"sequence">): Generator<Ste
       while (true) {
         t.count("comparisons");
         if (key === cur.key) {
-          yield t.step(f.toState(), [hl("found", cur.id)], 13, { key }, `${key} is already in the tree — nothing to insert`);
+          yield t.step(f.toState(), [hl("found", cur.id)], 13, { key }, `${key} is already in the tree, so there is nothing to insert`);
           break;
         }
         const side = key < cur.key ? "left" : "right";
@@ -225,7 +225,7 @@ export function* run({ initial, ops }: ResolvedInput<"sequence">): Generator<Ste
         t.count("comparisons");
         const side = key < node.key ? "left" : "right";
         cur = node[side];
-        yield t.step(f.toState({ label: String(key), at: cur }), [hl("compare", node.id), ...(cur ? [hl("current", cur)] : [])], [22, 23], { key, node: node.key }, `${key} ${side === "left" ? "<" : ">"} ${node.key}: go ${side}${cur ? "" : " — but there is nothing there"}`);
+        yield t.step(f.toState({ label: String(key), at: cur }), [hl("compare", node.id), ...(cur ? [hl("current", cur)] : [])], [22, 23], { key, node: node.key }, `${key} ${side === "left" ? "<" : ">"} ${node.key}: go ${side}${cur ? "" : ", but there is nothing there"}`);
       }
       yield t.step(
         f.toState(),
@@ -239,7 +239,7 @@ export function* run({ initial, ops }: ResolvedInput<"sequence">): Generator<Ste
       yield* remove(f.root, key, (id) => (f.root = id));
       yield t.step(f.toState(), [], 44, { key, n: f.inorder().length }, `Done: in-order traversal is ${f.inorder().join(", ") || "empty"}`);
     } else {
-      yield t.step(f.toState(), [], 7, {}, `${opLabel(op)} is not a BST operation — skipped`);
+      yield t.step(f.toState(), [], 7, {}, `Skipping ${opLabel(op)}: it is not a BST operation`);
     }
   }
   yield t.step(f.toState(), [], 7, { n: f.inorder().length }, `Done: ${f.inorder().length} keys`);

@@ -79,17 +79,17 @@ export function SequenceControls({
     const next: SequenceOp = { op };
     if (current.word) {
       const w = value.trim().toLowerCase();
-      if (!/^[a-z]{1,12}$/.test(w)) return setError("Use 1–12 letters a–z");
+      if (!/^[a-z]{1,12}$/.test(w)) return setError("Use 1 to 12 letters, a to z");
       next.word = w;
     }
     if (current.value) {
       const v = Number(value);
-      if (value === "" || !Number.isInteger(v) || v < 0 || v > 99) return setError("Value must be a whole number 0–99");
+      if (value === "" || !Number.isInteger(v) || v < 0 || v > 99) return setError("Value must be a whole number from 0 to 99");
       next.value = v;
     }
     if (current.index !== "none" && (index !== "" || current.index === "required")) {
       const i = Number(index);
-      if (index === "" || !Number.isInteger(i) || i < 0 || i > LIMITS.ops) return setError(`Index must be a whole number 0–${LIMITS.ops}`);
+      if (index === "" || !Number.isInteger(i) || i < 0 || i > LIMITS.ops) return setError(`Index must be a whole number from 0 to ${LIMITS.ops}`);
       next.index = i;
     }
     if (spec.ops.length >= LIMITS.ops) return setError(`At most ${LIMITS.ops} operations`);
@@ -140,7 +140,7 @@ export function SequenceControls({
 
       <Field label="Operations" hint={`${spec.ops.length} / ${LIMITS.ops}`}>
         <ol className="flex min-h-9 flex-wrap gap-1.5">
-          {spec.ops.length === 0 && <li className="text-xs text-muted-foreground">No operations yet — add one below.</li>}
+          {spec.ops.length === 0 && <li className="text-xs text-muted-foreground">No operations yet. Add one below.</li>}
           {spec.ops.map((o, i) => (
             <li
               key={i}

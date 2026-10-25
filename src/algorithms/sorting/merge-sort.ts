@@ -44,7 +44,7 @@ export const meta = {
   category: "sorting",
   renderer: "array-bars-aux",
   description:
-    "Bottom-up merge sort: runs of width 1, 2, 4, … are merged pairwise into an auxiliary buffer and copied back, doubling the sorted run length each pass. Guaranteed O(n log n) and stable, at the cost of O(n) extra space.",
+    "Bottom-up merge sort: runs of width 1, 2, 4, … are merged pairwise into an auxiliary buffer and copied back, doubling the sorted run length each pass. It is always O(n log n) and stable, but it needs O(n) extra space.",
   complexity: {
     time: { best: "O(n log n)", average: "O(n log n)", worst: "O(n log n)" },
     space: "O(n)",
@@ -111,7 +111,7 @@ export function* run(input: Item[]): Generator<Step<AuxState>> {
           [hl("insert", item.id), hl("range", ...ids(main, lo, hi))],
           takeLeft ? 10 : 11,
           { width, lo, mid, hi, i, j, k },
-          `${item.value} is the smaller head — write it to aux[${k}]`,
+          `${item.value} is the smaller head, so write it to aux[${k}]`,
         );
       }
       for (let k = lo; k < hi; k++) {

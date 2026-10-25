@@ -1,8 +1,25 @@
 import Link from "next/link";
 import { categories } from "@/algorithms/categories";
+import { byCategory } from "@/algorithms/registry";
 import { SearchButton } from "./command-palette";
+import { MobileNav, type NavLink } from "./mobile-nav";
 import { ShortcutsButton } from "./shortcuts-dialog";
 import { ThemeToggle } from "./theme";
+
+const shortName = (id: string, name: string) => (id === "dp" ? "DP" : id === "structures" ? "Structures" : name);
+
+const categoryLinks: NavLink[] = categories.map((c) => ({
+  href: `/#${c.id}`,
+  label: c.name,
+  hint: String(byCategory[c.id].length),
+}));
+
+const pageLinks: NavLink[] = [
+  { href: "/compare", label: "Compare" },
+  { href: "/about", label: "About" },
+];
+
+const linkClass = "rounded-md px-2.5 py-1.5 transition-colors hover:bg-muted hover:text-foreground";
 
 export function SiteHeader() {
   return (
@@ -14,20 +31,23 @@ export function SiteHeader() {
             algo<span className="text-brand">·</span>visual
           </span>
         </Link>
-        <nav aria-label="Categories" className="hidden items-center gap-1 text-sm text-muted-foreground md:flex">
+        <nav aria-label="Main" className="hidden items-center gap-1 text-sm text-muted-foreground lg:flex">
           {categories.map((c) => (
-            <Link key={c.id} href={`/#${c.id}`} className="rounded-md px-2.5 py-1.5 transition-colors hover:bg-muted hover:text-foreground">
-              {c.id === "dp" ? "DP" : c.id === "structures" ? "Structures" : c.name}
+            <Link key={c.id} href={`/#${c.id}`} className={linkClass}>
+              {shortName(c.id, c.name)}
             </Link>
           ))}
-          <Link href="/compare" className="rounded-md px-2.5 py-1.5 transition-colors hover:bg-muted hover:text-foreground">
-            Compare
-          </Link>
+          {pageLinks.map((p) => (
+            <Link key={p.href} href={p.href} className={linkClass}>
+              {p.label}
+            </Link>
+          ))}
         </nav>
         <div className="ml-auto flex items-center gap-1">
           <SearchButton />
-          <ShortcutsButton />
+          <ShortcutsButton className="hidden sm:inline-flex" />
           <ThemeToggle />
+          <MobileNav categories={categoryLinks} pages={pageLinks} />
         </div>
       </div>
     </header>

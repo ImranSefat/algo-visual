@@ -143,7 +143,7 @@ export const meta = {
   category: "structures",
   renderer: "tree",
   description:
-    "A self-balancing BST: every node's subtrees differ in height by at most one. After each insert or delete the heights are updated on the way back up, and any node that tips out of balance is fixed with one or two rotations — so every operation stays O(log n).",
+    "A self-balancing BST: every node's subtrees differ in height by at most one. After each insert or delete the heights are updated on the way back up, and any node that tips out of balance is fixed with one or two rotations, so every operation stays O(log n).",
   complexity: {
     time: { best: "O(log n)", average: "O(log n)", worst: "O(log n)" },
     space: "O(n)",
@@ -216,7 +216,7 @@ export function* run({ initial, ops }: ResolvedInput<"sequence">): Generator<Ste
       [hl(unbalanced ? "delete" : "current", id)],
       [31, 32],
       { node: n.key, height: n.height, balance: b },
-      unbalanced ? `${n.key} has balance ${signed(b)} — out of balance` : `${n.key}: height ${n.height}, balance ${signed(b)} — fine`,
+      unbalanced ? `${n.key} has balance ${signed(b)}, which is out of balance` : `${n.key}: height ${n.height}, balance ${signed(b)}, still balanced`,
     );
     if (b > 1) {
       if (f.balance(n.left!) < 0) {
@@ -260,7 +260,7 @@ export function* run({ initial, ops }: ResolvedInput<"sequence">): Generator<Ste
 
   function* remove(id: string | null, key: number, link: Link): Generator<Step<TreeState>, boolean> {
     if (!id) {
-      yield t.step(snap(), [], 49, { key }, `Reached an empty subtree — ${key} is not in the tree`);
+      yield t.step(snap(), [], 49, { key }, `Reached an empty subtree, so ${key} is not in the tree`);
       return false;
     }
     const n = f.get(id);
@@ -351,7 +351,7 @@ export function* run({ initial, ops }: ResolvedInput<"sequence">): Generator<Ste
       yield t.step(snap(), cur ? [hl("found", cur)] : [], 64, { key, result: cur !== null }, cur ? `Found ${key}` : `${key} is not in the tree`);
       continue;
     } else {
-      yield t.step(snap(), [], 1, {}, `${opLabel(op)} is not an AVL operation — skipped`);
+      yield t.step(snap(), [], 1, {}, `Skipping ${opLabel(op)}: it is not an AVL operation`);
       continue;
     }
     yield t.step(snap(), [], op.op === "insert" ? 45 : 59, { key, height: f.height(f.root) }, `Balanced again: height ${f.height(f.root)} with ${f.inorder().length} keys`);

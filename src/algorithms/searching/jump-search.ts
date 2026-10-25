@@ -37,7 +37,7 @@ export const meta = {
   category: "searching",
   renderer: "array-bars",
   description:
-    "On a sorted array, jumps ahead √n elements at a time until it overshoots the target, then scans that one block linearly. A middle ground between linear and binary search that only ever moves forward.",
+    "On a sorted array, jumps ahead √n elements at a time until it overshoots the target, then scans that one block linearly. It sits between linear and binary search, and it only ever moves forward.",
   complexity: { time: { best: "O(1)", average: "O(√n)", worst: "O(√n)" }, space: "O(1)" },
   source,
   pseudocode,
@@ -73,7 +73,7 @@ export function* run({ items, target }: ResolvedInput<"search">): Generator<Step
     if (a[next - 1].value >= target) break;
     prev = next;
     next += step;
-    yield t.step(view({ prev }), [block(prev, next), skipped(prev)], [6, 7], { target, step, prev, next }, `Yes — jump to the next block starting at ${prev}`);
+    yield t.step(view({ prev }), [block(prev, next), skipped(prev)], [6, 7], { target, step, prev, next }, `Yes, so jump to the next block, which starts at ${prev}`);
   }
   const end = Math.min(next, n);
   yield t.step(view({ prev, end: end - 1 }), [block(prev, end), skipped(prev)], 9, { target, prev, next }, `Scan the block [${prev}, ${end - 1}] linearly`);
