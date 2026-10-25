@@ -1,11 +1,11 @@
-import { ArrowRight, ArrowUpRight, Columns2, Keyboard, Pause, Rewind, Shuffle } from "lucide-react";
+import { ArrowRight, ArrowUpRight, BookOpen, Bug, Columns2, Keyboard, Lightbulb, ListPlus, Pause, Rewind, Shuffle } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { categories } from "@/algorithms/categories";
 import type { SequenceInputSpec } from "@/algorithms/core/input";
 import { algorithmList } from "@/algorithms/registry";
-import { AUTHOR, SOCIAL_LINKS } from "@/components/site/author";
+import { AUTHOR, GitHubMark, REPO, SOCIAL_LINKS } from "@/components/site/author";
 import { CREDIT_GROUPS, INSPIRATION, type Credit } from "@/components/site/credits";
 import { SiteFooter } from "@/components/site/site-footer";
 import { Button } from "@/components/ui/button";
@@ -67,6 +67,27 @@ const HOW_TO = [
   { Icon: Rewind, title: "Scrub backwards", body: "Drag the timeline anywhere. Every step is saved as a snapshot, so going back is as easy as going forward.", keys: ["Home", "End"] },
   { Icon: Shuffle, title: "Change the input", body: "Randomise it, type your own values, build a list of operations or draw walls on a grid.", keys: ["R"] },
   { Icon: Columns2, title: "Compare two", body: "Run two algorithms on the same input with one shared clock and see which one finishes first.", keys: [] },
+];
+
+const CONTRIBUTE = [
+  {
+    Icon: ListPlus,
+    title: "Request an algorithm",
+    body: "Tell me which algorithm or data structure you want and what should happen on screen.",
+    href: REPO.requestAlgorithm,
+  },
+  {
+    Icon: Lightbulb,
+    title: "Suggest a feature",
+    body: "A new control, a clearer explanation or something that would help in a class.",
+    href: REPO.suggestFeature,
+  },
+  {
+    Icon: Bug,
+    title: "Report a bug",
+    body: "Paste the page URL. It records the exact input and step, so the problem is easy to reproduce.",
+    href: REPO.reportBug,
+  },
 ];
 
 const PIPELINE = [
@@ -169,6 +190,11 @@ export default function AboutPage() {
             <Button asChild size="lg" variant="outline" className="h-10 px-4">
               <Link href="#made-by">Who made this</Link>
             </Button>
+            <Button asChild size="lg" variant="ghost" className="h-10 px-4">
+              <a href={REPO.url} target="_blank" rel="noopener noreferrer">
+                <GitHubMark className="size-4" /> Source on GitHub
+              </a>
+            </Button>
           </div>
         </section>
 
@@ -236,7 +262,11 @@ export default function AboutPage() {
           <p className="mt-6 max-w-3xl text-sm leading-relaxed text-muted-foreground">
             The algorithms never touch the interface, so each one can be tested on its own. Every highlighted line has to exist
             in the code you see, and every result is checked against a separate reference implementation on dozens of random
-            inputs. Pages are generated ahead of time, so the deployed site is plain static files.
+            inputs. Pages are generated ahead of time, so the deployed site is plain static files. All of it is{" "}
+            <a href={REPO.url} target="_blank" rel="noopener noreferrer" className="text-foreground underline underline-offset-4">
+              on GitHub
+            </a>
+            .
           </p>
           <dl className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {stats.map((s) => (
@@ -309,6 +339,59 @@ export default function AboutPage() {
                   </li>
                 ))}
               </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="contribute" className="scroll-mt-20 py-10">
+          <SectionTitle eyebrow="Open source" title="Ask for what you want to see" />
+          <p className="mb-6 max-w-2xl text-sm leading-relaxed text-pretty text-muted-foreground">
+            algo·visual is free and open source under the MIT license. You don&apos;t need to write code to help: ideas from
+            people learning this material are the most useful kind of contribution. Each link below opens a short form on
+            GitHub.
+          </p>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {CONTRIBUTE.map(({ Icon, title, body, href }) => (
+              <a
+                key={title}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex flex-col rounded-2xl border bg-card p-5 transition-[border-color,translate] hover:-translate-y-0.5 hover:border-foreground/20"
+              >
+                <span className="grid size-9 place-items-center rounded-xl bg-muted">
+                  <Icon className="size-4" />
+                </span>
+                <h3 className="mt-4 font-medium">{title}</h3>
+                <p className="mt-1 flex-1 text-sm leading-relaxed text-muted-foreground">{body}</p>
+                <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium">
+                  Open an issue{" "}
+                  <ArrowUpRight className="size-3.5 transition-transform group-hover:-translate-y-px group-hover:translate-x-px" />
+                </span>
+              </a>
+            ))}
+          </div>
+          <div className="mt-4 flex flex-col gap-4 rounded-2xl border bg-card p-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3">
+              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-foreground text-background">
+                <GitHubMark className="size-5" />
+              </span>
+              <div className="min-w-0">
+                <p className="truncate font-mono text-sm font-medium">ImranSefat/algo-visual</p>
+                <p className="text-xs text-muted-foreground">MIT licensed. Pull requests are welcome.</p>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Button asChild variant="outline">
+                <a href={REPO.contributing} target="_blank" rel="noopener noreferrer">
+                  <BookOpen /> Contributing guide
+                </a>
+              </Button>
+              <Button asChild>
+                <a href={REPO.url} target="_blank" rel="noopener noreferrer">
+                  <GitHubMark className="size-4" /> View on GitHub
+                </a>
+              </Button>
             </div>
           </div>
         </section>

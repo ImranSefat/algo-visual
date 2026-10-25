@@ -5,6 +5,13 @@
   "license": "MIT",
   "author": "Imran Sefat (https://imransefat.com)",
   "homepage": "https://algo-visual-iota.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ImranSefat/algo-visual.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ImranSefat/algo-visual/issues"
+  },
   "private": true,
   "scripts": {
     "dev": "next dev",

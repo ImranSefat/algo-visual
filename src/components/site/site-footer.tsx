@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AUTHOR, SocialIcons } from "./author";
+import { AUTHOR, REPO, SocialIcons } from "./author";
 
 /** Minimal credit line: who built it, why, and a way into the full story on /about. */
 export function SiteFooter() {
@@ -15,7 +15,15 @@ export function SiteFooter() {
             so students can watch algorithms run step by step and change the inputs themselves, instead of only reading about them.
           </p>
           <p className="text-xs text-muted-foreground">
-            Next.js · TypeScript · motion · Shiki ·{" "}
+            Open source under the{" "}
+            <a href={REPO.license} target="_blank" rel="noopener noreferrer" className="underline-offset-4 hover:underline">
+              MIT license
+            </a>{" "}
+            ·{" "}
+            <a href={REPO.url} target="_blank" rel="noopener noreferrer" className="text-foreground underline-offset-4 hover:underline">
+              Source on GitHub
+            </a>{" "}
+            ·{" "}
             <Link href="/about" className="text-foreground underline-offset-4 hover:underline">
               About the project →
             </Link>
