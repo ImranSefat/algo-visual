@@ -11,9 +11,19 @@ import { useStepDuration } from "@/store/playback";
 const LINE_HEIGHT = 22;
 const PADDING = 12;
 
-type View = "code" | "pseudo";
+type View = "code" | "pseudo" | "python";
 
-export function CodePanel({ code, pseudo, className }: { code: ReactNode; pseudo?: ReactNode; className?: string }) {
+export function CodePanel({
+  code,
+  pseudo,
+  python,
+  className,
+}: {
+  code: ReactNode;
+  pseudo?: ReactNode;
+  python?: ReactNode;
+  className?: string;
+}) {
   const step = useCurrentStep();
   const duration = useStepDuration();
   const reduceMotion = useReducedMotion();
@@ -35,7 +45,7 @@ export function CodePanel({ code, pseudo, className }: { code: ReactNode; pseudo
     <section className={cn("flex min-h-0 flex-col overflow-hidden rounded-2xl border bg-card", className)}>
       <header className="flex h-11 shrink-0 items-center justify-between gap-2 border-b px-3">
         <h2 className="text-xs font-medium tracking-wide text-muted-foreground uppercase">Code</h2>
-        {pseudo && (
+        {(pseudo || python) && (
           <ToggleGroup
             type="single"
             size="sm"
@@ -48,9 +58,16 @@ export function CodePanel({ code, pseudo, className }: { code: ReactNode; pseudo
             <ToggleGroupItem value="code" className="text-xs">
               TypeScript
             </ToggleGroupItem>
-            <ToggleGroupItem value="pseudo" className="text-xs">
-              Pseudocode
-            </ToggleGroupItem>
+            {pseudo && (
+              <ToggleGroupItem value="pseudo" className="text-xs">
+                Pseudocode
+              </ToggleGroupItem>
+            )}
+            {python && (
+              <ToggleGroupItem value="python" className="text-xs">
+                Python
+              </ToggleGroupItem>
+            )}
           </ToggleGroup>
         )}
       </header>
@@ -70,6 +87,7 @@ export function CodePanel({ code, pseudo, className }: { code: ReactNode; pseudo
           />
           <div className={cn("relative", view !== "code" && "hidden")}>{code}</div>
           {pseudo && <div className={cn("relative", view !== "pseudo" && "hidden")}>{pseudo}</div>}
+          {python && <div className={cn("relative", view !== "python" && "hidden")}>{python}</div>}
         </div>
       </div>
     </section>

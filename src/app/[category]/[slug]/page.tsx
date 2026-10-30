@@ -43,6 +43,7 @@ export default async function AlgorithmPage({ params }: PageProps<"/[category]/[
               className="max-h-[440px]"
               code={<CodeBlock code={meta.source} />}
               pseudo={meta.pseudocode ? <CodeBlock code={meta.pseudocode} lang="pascal" /> : undefined}
+              python={meta.python ? <CodeBlock code={meta.python} lang="python" /> : undefined}
             />
             <VariablesPanel />
             <CountersPanel />
