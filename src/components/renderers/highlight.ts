@@ -10,11 +10,13 @@ export const HIGHLIGHT_PRECEDENCE: HighlightKind[] = [
   "delete",
   "compare",
   "pivot",
+  "boundary",
   "current",
   "frontier",
   "visited",
   "sorted",
   "range",
+  "span",
   "wall",
 ];
 

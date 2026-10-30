@@ -39,13 +39,14 @@ export default async function AlgorithmPage({ params }: PageProps<"/[category]/[
             <Transport />
           </section>
           <aside className="flex min-w-0 flex-col gap-4">
+            {meta.variablesFirst && <VariablesPanel />}
             <CodePanel
               className="max-h-[440px]"
               code={<CodeBlock code={meta.source} />}
               pseudo={meta.pseudocode ? <CodeBlock code={meta.pseudocode} lang="pascal" /> : undefined}
             />
-            <VariablesPanel />
-            <CountersPanel />
+            {!meta.variablesFirst && <VariablesPanel />}
+            <CountersPanel className={meta.variablesFirst ? "flex-1" : undefined} />
           </aside>
         </div>
         <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(340px,440px)]">

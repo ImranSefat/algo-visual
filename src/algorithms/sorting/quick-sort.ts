@@ -1,6 +1,6 @@
 import { createTracer, hl } from "../core/step";
 import type { ArrayView } from "../core/states";
-import type { AlgorithmMeta, Item, Step } from "../core/types";
+import type { AlgorithmMeta, HighlightKind, Item, Step } from "../core/types";
 
 export const source = `function quickSort(a: number[], lo = 0, hi = a.length - 1) {
   if (lo >= hi) return a;
@@ -59,33 +59,83 @@ export const meta = {
   },
   source,
   pseudocode,
+  variablesFirst: true,
   defaultInput: { kind: "array", size: 24, distribution: "random", seed: 13 },
 } satisfies AlgorithmMeta;
+
+const LEGEND: NonNullable<ArrayView["legend"]> = [
+  { label: "Waiting" },
+  { kind: "span", label: "Current range" },
+  { kind: "swap", label: "Just swapped" },
+  { kind: "sorted", label: "In final position" },
+];
+
+const POINTER_KINDS: Record<string, HighlightKind> = { pivot: "pivot", i: "boundary", j: "compare" };
+
+const POINTER_NOTES: Record<string, string> = {
+  pivot: "compared against",
+  i: "swap if j < pivot",
+  j: "being checked",
+};
 
 export function* run(input: Item[]): Generator<Step<ArrayView>> {
   const t = createTracer<ArrayView>(["comparisons", "swaps"]);
   const a = [...input];
   const n = a.length;
   const done = new Set<string>();
-  const view = (pointers: ArrayView["pointers"]): ArrayView => ({ items: a, pointers });
+  const view = (pointers: ArrayView["pointers"]): ArrayView => ({
+    items: a,
+    pointers,
+    pointerNotes: Object.fromEntries(Object.entries(POINTER_NOTES).filter(([label]) => !!pointers && label in pointers)),
+    pointerKinds: POINTER_KINDS,
+    legend: LEGEND,
+  });
   const finished = () => hl("sorted", ...done);
-  const range = (lo: number, hi: number) => hl("range", ...a.slice(lo, hi + 1).map((x) => x.id));
+  const range = (lo: number, hi: number) => hl("span", ...a.slice(lo, hi + 1).map((x) => x.id));
+
+  // The very first partition introduces pivot, i and j one at a time; later partitions skip straight in.
+  let introduced = false;
 
   function* partition(lo: number, hi: number): Generator<Step<ArrayView>, number> {
     const pivot = a[hi];
     let i = lo;
-    yield t.step(
-      view({ lo, hi, i }),
-      [hl("pivot", pivot.id), range(lo, hi), finished()],
-      [10, 11],
-      { lo, hi, pivot: pivot.value, i },
-      `Partition [${lo}, ${hi}] around pivot ${pivot.value}`,
-    );
+    if (!introduced) {
+      introduced = true;
+      yield t.step(
+        view({ lo, hi, pivot: hi }),
+        [hl("pivot", pivot.id), range(lo, hi), finished()],
+        10,
+        { lo, hi, pivot: pivot.value },
+        `pivot = ${pivot.value}: the last value in the range. Every other value will be compared against it`,
+      );
+      yield t.step(
+        view({ lo, hi, pivot: hi, i }),
+        [hl("boundary", a[i].id), hl("pivot", pivot.id), range(lo, hi), finished()],
+        11,
+        { lo, hi, pivot: pivot.value, i },
+        `i = ${i}: the edge of the "less than pivot" section. Everything left of i will be smaller than the pivot (nothing yet)`,
+      );
+      yield t.step(
+        view({ lo, hi, pivot: hi, i, j: lo }),
+        [hl("compare", a[lo].id), hl("boundary", a[i].id), hl("pivot", pivot.id), range(lo, hi), finished()],
+        12,
+        { lo, hi, pivot: pivot.value, i, j: lo },
+        `j = ${lo}: the value being checked. j walks right one slot at a time, up to the slot before the pivot`,
+      );
+    } else {
+      yield t.step(
+        view({ lo, hi, pivot: hi, i }),
+        [hl("boundary", a[i].id), hl("pivot", pivot.id), range(lo, hi), finished()],
+        [10, 11],
+        { lo, hi, pivot: pivot.value, i },
+        `Partition [${lo}, ${hi}] around pivot ${pivot.value}`,
+      );
+    }
     for (let j = lo; j < hi; j++) {
       t.count("comparisons");
       yield t.step(
-        view({ lo, hi, i, j }),
-        [hl("compare", a[j].id), hl("pivot", pivot.id), range(lo, hi), finished()],
+        view({ lo, hi, pivot: hi, i, j }),
+        [hl("compare", a[j].id), hl("boundary", a[i].id), hl("pivot", pivot.id), range(lo, hi), finished()],
         13,
         { lo, hi, pivot: pivot.value, i, j },
         `Is ${a[j].value} less than the pivot ${pivot.value}?`,
@@ -96,7 +146,7 @@ export function* run(input: Item[]): Generator<Step<ArrayView>> {
           t.count("swaps");
         }
         yield t.step(
-          view({ lo, hi, i, j }),
+          view({ lo, hi, pivot: hi, i: i + 1, j }),
           [hl("swap", a[i].id, a[j].id), hl("pivot", pivot.id), range(lo, hi), finished()],
           [14, 15],
           { lo, hi, pivot: pivot.value, i: i + 1, j },
@@ -109,7 +159,7 @@ export function* run(input: Item[]): Generator<Step<ArrayView>> {
     t.count("swaps");
     done.add(pivot.id);
     yield t.step(
-      view({ lo, hi, i }),
+      view({ lo, hi, pivot: i, i }),
       [hl("swap", pivot.id), range(lo, hi), finished()],
       18,
       { lo, hi, pivot: pivot.value, i },
