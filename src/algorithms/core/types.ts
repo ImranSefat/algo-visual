@@ -70,6 +70,8 @@ export type AlgorithmMeta = {
   source: string;
   /** Optional pseudocode, line-aligned with `source` (line N describes source line N). */
   pseudocode?: string;
+  /** Optional Python version, line-aligned with `source` (blank lines where the TypeScript has closing braces). */
+  python?: string;
   defaultInput: InputSpec;
 };
 

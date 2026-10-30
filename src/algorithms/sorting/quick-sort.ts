@@ -44,6 +44,27 @@ procedure partition(A, lo, hi)
   return i
 end procedure`;
 
+export const python = `def quick_sort(a, lo, hi):
+    if lo >= hi: return a
+    p = partition(a, lo, hi)
+    quick_sort(a, lo, p - 1)
+    quick_sort(a, p + 1, hi)
+    return a
+
+
+def partition(a, lo, hi):
+    pivot = a[hi]
+    i = lo
+    for j in range(lo, hi):
+        if a[j] < pivot:
+            a[i], a[j] = a[j], a[i]
+            i += 1
+
+
+    a[i], a[hi] = a[hi], a[i]
+    return i
+`;
+
 export const meta = {
   slug: "quick-sort",
   name: "Quick Sort",
@@ -59,6 +80,7 @@ export const meta = {
   },
   source,
   pseudocode,
+  python,
   defaultInput: { kind: "array", size: 24, distribution: "random", seed: 13 },
 } satisfies AlgorithmMeta;
 
