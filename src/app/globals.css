@@ -42,6 +42,8 @@
   --color-viz-sorted: var(--viz-sorted);
   --color-viz-pivot: var(--viz-pivot);
   --color-viz-range: var(--viz-range);
+  --color-viz-boundary: var(--viz-boundary);
+  --color-viz-span: var(--viz-span);
   --color-viz-current: var(--viz-current);
   --color-viz-visited: var(--viz-visited);
   --color-viz-frontier: var(--viz-frontier);
@@ -81,6 +83,8 @@
   --viz-sorted: oklch(0.72 0.13 168);
   --viz-pivot: oklch(0.6 0.2 300);
   --viz-range: oklch(0.86 0.06 255);
+  --viz-boundary: oklch(0.42 0.13 262);
+  --viz-span: oklch(0.88 0.035 255);
   --viz-current: oklch(0.62 0.18 255);
   --viz-visited: oklch(0.83 0.07 205);
   --viz-frontier: oklch(0.8 0.14 150);
@@ -127,6 +131,8 @@
   --viz-sorted: oklch(0.68 0.13 168);
   --viz-pivot: oklch(0.68 0.18 300);
   --viz-range: oklch(0.4 0.07 255);
+  --viz-boundary: oklch(0.62 0.17 262);
+  --viz-span: oklch(0.36 0.04 255);
   --viz-current: oklch(0.7 0.15 250);
   --viz-visited: oklch(0.45 0.08 210);
   --viz-frontier: oklch(0.72 0.15 150);

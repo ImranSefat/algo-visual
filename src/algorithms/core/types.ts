@@ -7,6 +7,8 @@ export type HighlightKind =
   | "pivot"
   | "range"
   | "current"
+  | "boundary"
+  | "span"
   | "visited"
   | "frontier"
   | "path"
@@ -70,6 +72,8 @@ export type AlgorithmMeta = {
   source: string;
   /** Optional pseudocode, line-aligned with `source` (line N describes source line N). */
   pseudocode?: string;
+  /** Show the Variables panel above the code panel, so pointer labels and variable chips can be read side by side. */
+  variablesFirst?: boolean;
   defaultInput: InputSpec;
 };
 

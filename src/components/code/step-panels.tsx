@@ -2,6 +2,8 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import type { ReactNode } from "react";
+import type { HighlightKind } from "@/algorithms/core/types";
+import { vizColor } from "@/components/renderers/highlight";
 import { useCurrentStep } from "@/components/visualizer/context";
 import { cn } from "@/lib/utils";
 import { usePlayback, useStepDuration } from "@/store/playback";
@@ -22,26 +24,41 @@ function formatValue(value: string | number | boolean): string {
 
 /** `name = value` chips; a chip remounts (and pulses) whenever its value changes. */
 export function VariablesPanel() {
-  const { vars } = useCurrentStep();
+  const { vars, state } = useCurrentStep();
   const duration = useStepDuration();
   const entries = Object.entries(vars);
+  // Pointer colours (if the algorithm defines any) so a chip matches its label under the bars.
+  const raw = state as unknown;
+  const kinds =
+    typeof raw === "object" && raw !== null && "pointerKinds" in raw
+      ? (raw.pointerKinds as Record<string, HighlightKind> | undefined)
+      : undefined;
   return (
     <Panel title="Variables">
       <div className="flex min-h-7 flex-wrap gap-1.5">
         {entries.length === 0 && <span className="text-xs text-muted-foreground">none</span>}
-        {entries.map(([name, value]) => (
-          <motion.span
-            key={`${name}=${String(value)}`}
-            initial={{ scale: 1.2 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", visualDuration: duration, bounce: 0.4 }}
-            className="inline-flex h-7 items-center rounded-lg border bg-muted/60 px-2 font-mono text-xs"
-          >
-            <span className="text-muted-foreground">{name}</span>
-            <span className="mx-1.5 text-muted-foreground/60">=</span>
-            <span className="font-medium">{formatValue(value)}</span>
-          </motion.span>
-        ))}
+        {entries.map(([name, value]) => {
+          const kind = kinds?.[name];
+          const color = kind ? vizColor(kind) : undefined;
+          return (
+            <motion.span
+              key={`${name}=${String(value)}`}
+              style={
+                color
+                  ? { borderColor: color, backgroundColor: `color-mix(in oklch, ${color} 22%, transparent)` }
+                  : undefined
+              }
+              initial={{ scale: 1.2 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", visualDuration: duration, bounce: 0.4 }}
+              className="inline-flex h-7 items-center rounded-lg border bg-muted/60 px-2 font-mono text-xs"
+            >
+              <span className="text-muted-foreground">{name}</span>
+              <span className="mx-1.5 text-muted-foreground/60">=</span>
+              <span className="font-medium">{formatValue(value)}</span>
+            </motion.span>
+          );
+        })}
       </div>
     </Panel>
   );
@@ -51,11 +68,11 @@ function humanize(name: string): string {
   return name.replace(/([a-z])([A-Z])/g, "$1 $2").toLowerCase();
 }
 
-export function CountersPanel() {
+export function CountersPanel({ className }: { className?: string }) {
   const { counters } = useCurrentStep();
   if (!counters) return null;
   return (
-    <Panel title="Counters">
+    <Panel title="Counters" className={className}>
       <dl className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
         {Object.entries(counters).map(([name, value]) => (
           <div key={name} className="rounded-xl bg-muted/50 px-3 py-2">
