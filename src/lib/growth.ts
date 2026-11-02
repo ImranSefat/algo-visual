@@ -1,9 +1,10 @@
 import { resolveInput, type ArrayInputSpec, type Distribution, type ResolvedInput } from "@/algorithms/core/input";
+import { mulberry32, randInt, shuffle } from "@/algorithms/core/prng";
 import type { Step } from "@/algorithms/core/types";
 import type { AnyAlgorithm } from "@/algorithms/registry";
 
 /** Array sizes the growth chart measures. */
-export const GROWTH_SIZES = [10, 25, 50, 100, 150, 200, 300, 400];
+export const GROWTH_SIZES = [10, 25, 50, 100, 150, 200, 250, 300];
 
 /** Sizes above this are beyond what the animation allows; they only exist to show the trend. */
 export const ANIMATION_MAX_SIZE = 150;
@@ -12,13 +13,41 @@ export const ANIMATION_MAX_SIZE = 150;
 export const GROWTH_DISTRIBUTIONS: Distribution[] = ["random", "nearly-sorted", "reversed", "few-unique"];
 
 /**
- * Seeded runs averaged per size. Reversed input barely varies and is the slowest to run, and large sizes
- * vary less in relative terms, so both get fewer runs.
+ * Seeded runs averaged per size. Reversed and Nearly sorted barely vary and are the slowest to run, and
+ * large sizes vary less in relative terms, so those get fewer runs.
  */
 export function samplesFor(distribution: Distribution, size: number): number {
   const large = size > ANIMATION_MAX_SIZE;
   if (distribution === "reversed") return large ? 1 : 2;
+  // Nearly sorted is almost as slow as Reversed and barely varies between seeds.
+  if (distribution === "nearly-sorted") return large ? 1 : 3;
   return large ? 2 : 5;
+}
+
+/**
+ * The site's own inputs draw values from 5 to 99, so above roughly 95 elements they repeat values, which
+ * blunts the worst cases (Reversed no longer costs n(n-1)/2). For the chart, Random, Nearly sorted and
+ * Reversed use the distinct values 1..n instead, shaped the same way as the Distribution control builds
+ * them. Few unique keeps the site's own four values.
+ */
+function growthSpec(size: number, distribution: Distribution, seed: number): ArrayInputSpec {
+  const ascending = Array.from({ length: size }, (_, i) => i + 1);
+  const rng = mulberry32(seed);
+  let custom: number[] | undefined;
+  if (distribution === "random") custom = shuffle(rng, ascending);
+  else if (distribution === "reversed") custom = ascending.reverse();
+  else if (distribution === "nearly-sorted") {
+    custom = ascending;
+    const swaps = Math.max(1, Math.round(size / 10));
+    for (let k = 0; k < swaps; k++) {
+      const i = randInt(rng, 0, size - 1);
+      const j = Math.min(size - 1, i + randInt(rng, 1, 3));
+      [custom[i], custom[j]] = [custom[j], custom[i]];
+    }
+  }
+  return custom
+    ? { kind: "array", size, distribution: "custom", custom, seed }
+    : { kind: "array", size, distribution, seed };
 }
 
 /**
@@ -51,7 +80,7 @@ export function measurePoint(
 ): Record<string, number> {
   const totals: Record<string, number> = {};
   for (let sample = 0; sample < samples; sample++) {
-    const counters = finalCounters(algo, { kind: "array", size, distribution, seed: 101 + sample });
+    const counters = finalCounters(algo, growthSpec(size, distribution, 101 + sample));
     for (const [name, value] of Object.entries(counters)) totals[name] = (totals[name] ?? 0) + value;
   }
   for (const name of Object.keys(totals)) totals[name] /= samples;

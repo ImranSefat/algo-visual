@@ -63,14 +63,36 @@ function useWidth() {
   return [ref, width] as const;
 }
 
+/** True once the element has come (nearly) into view; measuring waits for this so it never slows the page above. */
+function useSeen() {
+  const ref = useRef<HTMLElement>(null);
+  const [seen, setSeen] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setSeen(true);
+        observer.disconnect();
+      },
+      { rootMargin: "200px" },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+  return [ref, seen] as const;
+}
+
 /** How the cost of an algorithm grows with the array size, one line per kind of input. */
 export function GrowthChart({ meta }: { meta: AlgorithmMeta }) {
   const [data, setData] = useState<GrowthData | null>(() => cache.get(meta.slug) ?? null);
   const [selected, setSelected] = useState<string | null>(null);
   const [wrapRef, width] = useWidth();
+  const [sectionRef, seen] = useSeen();
 
   useEffect(() => {
-    if (cache.has(meta.slug)) return;
+    if (!seen || cache.has(meta.slug)) return;
     const algo = getAlgorithm(meta.slug);
     if (!algo || algo.meta.defaultInput.kind !== "array") return;
     let cancelled = false;
@@ -80,13 +102,13 @@ export function GrowthChart({ meta }: { meta: AlgorithmMeta }) {
     return () => {
       cancelled = true;
     };
-  }, [meta.slug]);
+  }, [meta.slug, seen]);
 
   const counters = data ? Object.keys(data.series.random ?? {}) : [];
   const counter = selected && counters.includes(selected) ? selected : counters[0];
 
   return (
-    <section className="rounded-2xl border bg-card p-4 sm:p-5">
+    <section ref={sectionRef} className="rounded-2xl border bg-card p-4 sm:p-5">
       <header className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <h2 className="text-xs font-medium tracking-wide text-muted-foreground uppercase">Growth by input size</h2>
         {counters.length > 1 && (
@@ -117,7 +139,7 @@ export function GrowthChart({ meta }: { meta: AlgorithmMeta }) {
         )}
       </div>
       <p className="mt-2 text-xs text-muted-foreground">
-        Averaged over seeded runs for each size, on the same kinds of input as the Distribution control. Sizes above {ANIMATION_MAX_SIZE} are only for this chart; the animation stops at {ANIMATION_MAX_SIZE}.
+        Averaged over seeded runs for each size. Random, Nearly sorted and Reversed use distinct values (the site&apos;s own inputs repeat values above about 95 elements), so the curves follow the textbook cases. Sizes above {ANIMATION_MAX_SIZE} are only for this chart; the animation stops at {ANIMATION_MAX_SIZE}.
       </p>
     </section>
   );
@@ -153,7 +175,7 @@ function Chart({ data, counter, meta, width }: { data: GrowthData; counter: stri
     .x((_, i) => x(sizes[i]))
     .y((value) => y(value))
     .curve(curveMonotoneX);
-  const xTicks = width < 480 ? sizes.filter((n) => [10, 100, 200, 400].includes(n)) : sizes;
+  const xTicks = width < 480 ? sizes.filter((n) => [10, 100, 200, 300].includes(n)) : sizes;
   const name = counter.toLowerCase();
 
   // End-of-line value labels, nudged apart so close values stay readable.
