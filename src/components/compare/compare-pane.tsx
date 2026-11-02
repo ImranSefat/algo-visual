@@ -77,7 +77,7 @@ export function ComparePane({ side }: { side: Side }) {
                 </Link>
               </div>
             </header>
-            <Canvas className="h-[clamp(220px,40vh,420px)]" />
+            <Canvas className="h-[clamp(220px,40vh,420px)]" dense />
             <StepNote className="min-h-10" />
             <PaneStatus total={trace.length} />
           </section>

@@ -9,7 +9,7 @@ import { useStepDuration } from "@/store/playback";
 import { useAlgorithm, useCurrentStep } from "./context";
 
 /** Renders the current step with the algorithm's renderer. */
-export function Canvas({ className, compact }: { className?: string; compact?: boolean }) {
+export function Canvas({ className, compact, dense }: { className?: string; compact?: boolean; dense?: boolean }) {
   const { meta } = useAlgorithm();
   const step = useCurrentStep();
   const duration = useStepDuration();
@@ -28,7 +28,7 @@ export function Canvas({ className, compact }: { className?: string; compact?: b
   return (
     <div className={cn("@container relative h-full w-full", className)}>
       <GridEditContext.Provider value={meta.defaultInput.kind === "grid" ? commitGrid : null}>
-        <Renderer step={step} duration={duration} compact={compact} />
+        <Renderer step={step} duration={duration} compact={compact} dense={dense} />
       </GridEditContext.Provider>
     </div>
   );

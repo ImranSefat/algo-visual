@@ -7,6 +7,8 @@ export type HighlightKind =
   | "pivot"
   | "range"
   | "current"
+  | "boundary"
+  | "span"
   | "visited"
   | "frontier"
   | "path"
@@ -72,6 +74,8 @@ export type AlgorithmMeta = {
   pseudocode?: string;
   /** Show a chart of how the counters grow with the array size (array algorithms only). */
   growthChart?: boolean;
+  /** Show the Variables panel above the code panel, so pointer labels and variable chips can be read side by side. */
+  variablesFirst?: boolean;
   /** Optional Python version, line-aligned with `source` (blank lines where the TypeScript has closing braces). */
   python?: string;
   defaultInput: InputSpec;
