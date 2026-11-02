@@ -51,8 +51,8 @@ export default async function AlgorithmPage({ params }: PageProps<"/[category]/[
             <CountersPanel className={meta.variablesFirst ? "flex-1" : undefined} />
           </aside>
         </div>
-        <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(340px,440px)]">
-          <div className="grid min-w-0 gap-4">
+        <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(340px,440px)]">
+          <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-4">
             <InputControls />
             {meta.growthChart && <GrowthChart meta={meta} />}
           </div>

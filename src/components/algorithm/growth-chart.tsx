@@ -287,12 +287,12 @@ function Chart({ data, counter, meta, width }: { data: GrowthData; counter: stri
       <details className="mt-2 text-xs">
         <summary className="cursor-pointer text-muted-foreground select-none">Show data</summary>
         <div className="mt-2 overflow-x-auto">
-          <table className="w-full min-w-[360px] text-right font-mono tabular-nums">
+          <table className="w-full text-right font-mono text-[11px] tabular-nums sm:text-xs">
             <thead className="text-muted-foreground">
               <tr>
-                <th className="py-1 pr-3 text-left font-normal">n</th>
+                <th className="py-1 pr-2 text-left align-bottom font-normal">n</th>
                 {lines.map(({ distribution }) => (
-                  <th key={distribution} className="px-2 py-1 font-normal">
+                  <th key={distribution} className="px-1 py-1 align-bottom font-sans font-normal sm:px-2">
                     {LABELS[distribution]}
                   </th>
                 ))}
@@ -301,9 +301,9 @@ function Chart({ data, counter, meta, width }: { data: GrowthData; counter: stri
             <tbody>
               {sizes.slice(0, data.done).map((size, i) => (
                 <tr key={size} className="border-t">
-                  <td className="py-1 pr-3 text-left">{size}</td>
+                  <td className="py-1 pr-2 text-left">{size}</td>
                   {lines.map(({ distribution, values }) => (
-                    <td key={distribution} className="px-2 py-1">
+                    <td key={distribution} className="px-1 py-1 sm:px-2">
                       {formatCount(values[i])}
                     </td>
                   ))}
