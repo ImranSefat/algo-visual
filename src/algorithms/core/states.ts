@@ -1,4 +1,4 @@
-import type { Item } from "./types";
+import type { HighlightKind, Item } from "./types";
 
 /**
  * State shapes emitted by algorithms and consumed by renderers. Pure data, no React.
@@ -7,7 +7,20 @@ import type { Item } from "./types";
 export type Pointers = Record<string, number>;
 
 /** `array-bars`: either a bare array or a view with a search target / pointers. */
-export type ArrayView = { items: Item[]; target?: number; pointers?: Pointers };
+/** One row of a colour legend: a swatch in the highlight colour of `kind` (neutral when omitted) plus a label. */
+export type LegendItem = { kind?: HighlightKind; label: string };
+
+export type ArrayView = {
+  items: Item[];
+  target?: number;
+  pointers?: Pointers;
+  /** Optional short role text drawn next to a pointer label, keyed by the pointer's label. */
+  pointerNotes?: Record<string, string>;
+  /** Optional highlight colour for a pointer label, keyed by label, so it matches the bars it refers to. */
+  pointerKinds?: Record<string, HighlightKind>;
+  /** Optional colour legend drawn under the bars. */
+  legend?: LegendItem[];
+};
 export type ArrayState = Item[] | ArrayView;
 
 /** An array slot; `null` when its item currently lives in the other row. */

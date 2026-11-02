@@ -6,4 +6,6 @@ export type RendererProps<S> = {
   duration: number;
   /** Compact mode for thumbnails: no labels, no chrome. */
   compact?: boolean;
+  /** Short panes (compare mode): keep the labels but drop pointer notes and colour legends. */
+  dense?: boolean;
 };
