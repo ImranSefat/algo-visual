@@ -268,18 +268,18 @@ function Chart({ data, counter, meta, width }: { data: GrowthData; counter: stri
           </g>
         ))}
       </svg>
-      <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs" aria-live="off">
+      <div className="mt-1 grid grid-cols-1 gap-y-1.5 text-xs sm:flex sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-1" aria-live="off">
         <span className="font-mono text-muted-foreground">n = {sizes[active]}</span>
         {lines.map(({ distribution, values }) => (
           <span key={distribution} className="flex items-center gap-1.5 text-foreground/80">
-            <span className="h-0.5 w-4 rounded-full" style={{ backgroundColor: COLORS[distribution] }} />
-            {LABELS[distribution]}
-            <span className="font-mono font-medium text-foreground tabular-nums">{formatCount(values[active])}</span>
+            <span className="h-0.5 w-4 shrink-0 rounded-full" style={{ backgroundColor: COLORS[distribution] }} />
+            <span className="whitespace-nowrap">{LABELS[distribution]}</span>
+            <span className="ml-auto font-mono font-medium text-foreground tabular-nums sm:ml-0">{formatCount(values[active])}</span>
           </span>
         ))}
         {reference && (
           <span className="flex items-center gap-1.5 text-muted-foreground">
-            <span className="w-4 border-t-2 border-dashed" style={{ borderColor: "var(--viz-default)" }} />
+            <span className="w-4 shrink-0 border-t-2 border-dashed" style={{ borderColor: "var(--viz-default)" }} />
             {reference.label} (scaled to Random)
           </span>
         )}
