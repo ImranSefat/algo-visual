@@ -72,6 +72,8 @@ export type AlgorithmMeta = {
   pseudocode?: string;
   /** Show a chart of how the counters grow with the array size (array algorithms only). */
   growthChart?: boolean;
+  /** Optional Python version, line-aligned with `source` (blank lines where the TypeScript has closing braces). */
+  python?: string;
   defaultInput: InputSpec;
 };
 

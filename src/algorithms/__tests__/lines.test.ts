@@ -25,6 +25,10 @@ describe.each(Object.values(algorithms).map((a) => [a.meta.slug, a] as const))("
     if (meta.pseudocode) expect(lineCount(meta.pseudocode)).toBe(max);
   });
 
+  it("python is line-aligned with the source", () => {
+    if (meta.python) expect(lineCount(meta.python)).toBe(max);
+  });
+
   it("every step has a note", () => {
     for (const step of steps) expect(step.note.length).toBeGreaterThan(0);
   });
