@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { algorithmList, getAlgorithm } from "@/algorithms/registry";
 import { AlgorithmHeader, ComplexityCard, DescriptionCard } from "@/components/algorithm/algorithm-info";
+import { GrowthChart } from "@/components/algorithm/growth-chart";
 import { CodeBlock } from "@/components/code/code-block";
 import { CodePanel } from "@/components/code/code-panel";
 import { CountersPanel, StepNote, VariablesPanel } from "@/components/code/step-panels";
@@ -49,7 +50,10 @@ export default async function AlgorithmPage({ params }: PageProps<"/[category]/[
           </aside>
         </div>
         <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(340px,440px)]">
-          <InputControls />
+          <div className="grid min-w-0 gap-4">
+            <InputControls />
+            {meta.growthChart && <GrowthChart meta={meta} />}
+          </div>
           <div className="grid gap-4">
             <DescriptionCard meta={meta} />
             <ComplexityCard meta={meta} />

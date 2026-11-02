@@ -59,6 +59,7 @@ export const meta = {
   },
   source,
   pseudocode,
+  growthChart: true,
   defaultInput: { kind: "array", size: 24, distribution: "random", seed: 13 },
 } satisfies AlgorithmMeta;
 

@@ -70,6 +70,8 @@ export type AlgorithmMeta = {
   source: string;
   /** Optional pseudocode, line-aligned with `source` (line N describes source line N). */
   pseudocode?: string;
+  /** Show a chart of how the counters grow with the array size (array algorithms only). */
+  growthChart?: boolean;
   defaultInput: InputSpec;
 };
 
