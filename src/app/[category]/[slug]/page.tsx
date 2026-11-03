@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { algorithmList, getAlgorithm } from "@/algorithms/registry";
 import { AlgorithmHeader, ComplexityCard, DescriptionCard } from "@/components/algorithm/algorithm-info";
+import { GrowthChart } from "@/components/algorithm/growth-chart";
 import { CodeBlock } from "@/components/code/code-block";
 import { CodePanel } from "@/components/code/code-panel";
 import { CountersPanel, StepNote, VariablesPanel } from "@/components/code/step-panels";
@@ -9,6 +10,7 @@ import { InputControls } from "@/components/controls/input-controls";
 import { Canvas } from "@/components/visualizer/canvas";
 import { Transport } from "@/components/visualizer/transport";
 import { VisualizerRoot } from "@/components/visualizer/visualizer-root";
+import { measureGrowth } from "@/lib/growth";
 
 export const dynamicParams = false;
 
@@ -27,6 +29,8 @@ export default async function AlgorithmPage({ params }: PageProps<"/[category]/[
   const algo = getAlgorithm(slug);
   if (!algo || algo.meta.category !== category) notFound();
   const { meta } = algo;
+  // Seeded, so identical for every visitor: measured once here (at build time) instead of in the browser.
+  const growth = meta.growthChart && meta.defaultInput.kind === "array" ? measureGrowth(algo) : null;
 
   return (
     <VisualizerRoot key={slug} slug={slug}>
@@ -50,8 +54,11 @@ export default async function AlgorithmPage({ params }: PageProps<"/[category]/[
             <CountersPanel className={meta.variablesFirst ? "flex-1" : undefined} />
           </aside>
         </div>
-        <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(340px,440px)]">
-          <InputControls />
+        <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(340px,440px)]">
+          <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-4">
+            <InputControls />
+            {growth && <GrowthChart meta={meta} data={growth} />}
+          </div>
           <div className="grid gap-4">
             <DescriptionCard meta={meta} />
             <ComplexityCard meta={meta} />

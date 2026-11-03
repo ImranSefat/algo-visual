@@ -72,6 +72,8 @@ export type AlgorithmMeta = {
   source: string;
   /** Optional pseudocode, line-aligned with `source` (line N describes source line N). */
   pseudocode?: string;
+  /** Show a chart of how the counters grow with the array size (array algorithms only). */
+  growthChart?: boolean;
   /** Show the Variables panel above the code panel, so pointer labels and variable chips can be read side by side. */
   variablesFirst?: boolean;
   /** Optional Python version, line-aligned with `source` (blank lines where the TypeScript has closing braces). */

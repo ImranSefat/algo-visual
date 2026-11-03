@@ -80,6 +80,7 @@ export const meta = {
   },
   source,
   pseudocode,
+  growthChart: true,
   variablesFirst: true,
   python,
   defaultInput: { kind: "array", size: 24, distribution: "random", seed: 13 },
