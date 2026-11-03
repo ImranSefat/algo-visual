@@ -5,9 +5,8 @@ import { curveMonotoneX, line } from "d3-shape";
 import { useEffect, useRef, useState } from "react";
 import type { Distribution } from "@/algorithms/core/input";
 import type { AlgorithmMeta } from "@/algorithms/core/types";
-import { getAlgorithm } from "@/algorithms/registry";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { ANIMATION_MAX_SIZE, GROWTH_DISTRIBUTIONS, measureGrowth, type GrowthData } from "@/lib/growth";
+import { ANIMATION_MAX_SIZE, GROWTH_DISTRIBUTIONS, type GrowthData } from "@/lib/growth";
 
 const LABELS: Record<Distribution, string> = {
   random: "Random",
@@ -35,9 +34,6 @@ const REFERENCES: Record<string, { label: string; f: (n: number) => number }> = 
 const HEIGHT = 220;
 const MARGIN = { top: 12, right: 52, bottom: 34, left: 48 };
 
-/** Measuring takes a moment, so each algorithm is measured once per page load. */
-const cache = new Map<string, GrowthData>();
-
 function capitalise(name: string): string {
   return name.charAt(0).toUpperCase() + name.slice(1);
 }
@@ -63,52 +59,16 @@ function useWidth() {
   return [ref, width] as const;
 }
 
-/** True once the element has come (nearly) into view; measuring waits for this so it never slows the page above. */
-function useSeen() {
-  const ref = useRef<HTMLElement>(null);
-  const [seen, setSeen] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        setSeen(true);
-        observer.disconnect();
-      },
-      { rootMargin: "200px" },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-  return [ref, seen] as const;
-}
-
 /** How the cost of an algorithm grows with the array size, one line per kind of input. */
-export function GrowthChart({ meta }: { meta: AlgorithmMeta }) {
-  const [data, setData] = useState<GrowthData | null>(() => cache.get(meta.slug) ?? null);
+export function GrowthChart({ meta, data }: { meta: AlgorithmMeta; data: GrowthData }) {
   const [selected, setSelected] = useState<string | null>(null);
   const [wrapRef, width] = useWidth();
-  const [sectionRef, seen] = useSeen();
 
-  useEffect(() => {
-    if (!seen || cache.has(meta.slug)) return;
-    const algo = getAlgorithm(meta.slug);
-    if (!algo || algo.meta.defaultInput.kind !== "array") return;
-    let cancelled = false;
-    measureGrowth(algo, () => cancelled, setData).then((result) => {
-      if (result) cache.set(meta.slug, result);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [meta.slug, seen]);
-
-  const counters = data ? Object.keys(data.series.random ?? {}) : [];
+  const counters = Object.keys(data.series.random ?? {});
   const counter = selected && counters.includes(selected) ? selected : counters[0];
 
   return (
-    <section ref={sectionRef} className="rounded-2xl border bg-card p-4 sm:p-5">
+    <section className="rounded-2xl border bg-card p-4 sm:p-5">
       <header className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <h2 className="text-xs font-medium tracking-wide text-muted-foreground uppercase">Growth by input size</h2>
         {counters.length > 1 && (
@@ -130,16 +90,10 @@ export function GrowthChart({ meta }: { meta: AlgorithmMeta }) {
         )}
       </header>
       <div ref={wrapRef} className="w-full">
-        {data && counter && data.done >= 2 && width > 0 ? (
-          <Chart data={data} counter={counter} meta={meta} width={width} />
-        ) : (
-          <div className="flex items-center justify-center text-sm text-muted-foreground" style={{ height: HEIGHT }}>
-            Measuring…
-          </div>
-        )}
+        {counter && width > 0 ? <Chart data={data} counter={counter} meta={meta} width={width} /> : <div style={{ height: HEIGHT }} />}
       </div>
       <p className="mt-2 text-xs text-muted-foreground">
-        Averaged over seeded runs for each size. Random, Nearly sorted and Reversed use distinct values (the site&apos;s own inputs repeat values above about 95 elements), so the curves follow the textbook cases. Sizes above {ANIMATION_MAX_SIZE} are only for this chart; the animation stops at {ANIMATION_MAX_SIZE}.
+        Averaged over seeded runs for each size. Random, Nearly sorted and Reversed use distinct values (the site&apos;s own inputs pick values from 5 to 99, so they repeat even in small arrays), so the curves follow the textbook cases. Sizes above {ANIMATION_MAX_SIZE} are only for this chart; the animation stops at {ANIMATION_MAX_SIZE}.
       </p>
     </section>
   );
@@ -147,20 +101,20 @@ export function GrowthChart({ meta }: { meta: AlgorithmMeta }) {
 
 function Chart({ data, counter, meta, width }: { data: GrowthData; counter: string; meta: AlgorithmMeta; width: number }) {
   const { sizes } = data;
-  const last = data.done - 1;
+  const last = sizes.length - 1;
   const [hover, setHover] = useState<number | null>(null);
   const active = Math.min(hover ?? last, last);
   const lines = GROWTH_DISTRIBUTIONS.flatMap((distribution) => {
-    const values = data.series[distribution]?.[counter]?.slice(0, data.done);
+    const values = data.series[distribution]?.[counter];
     return values ? [{ distribution, values }] : [];
-  }).sort((a, b) => b.values[last] - a.values[last]);
+  });
 
   // Only the comparisons line is compared with a theoretical curve, scaled to meet the Random line at the latest size.
   const reference = counter === "comparisons" ? REFERENCES[meta.complexity.time.average] : undefined;
   const randomValues = data.series.random?.[counter];
   const referenceValues =
     reference && randomValues
-      ? sizes.slice(0, data.done).map((n) => (randomValues[last] * reference.f(n)) / reference.f(sizes[last]))
+      ? sizes.map((n) => (randomValues[last] * reference.f(n)) / reference.f(sizes[last]))
       : undefined;
 
   const peak = Math.max(...lines.flatMap((l) => l.values), ...(referenceValues ?? []));
@@ -179,11 +133,12 @@ function Chart({ data, counter, meta, width }: { data: GrowthData; counter: stri
   const name = counter.toLowerCase();
 
   // End-of-line value labels, nudged apart so close values stay readable.
-  const endLabels: number[] = [];
-  lines.forEach(({ values }, i) => {
-    const wanted = y(values[last]);
-    endLabels.push(i === 0 ? wanted : Math.max(wanted, endLabels[i - 1] + 13));
-  });
+  const endLabels = new Map<Distribution, number>();
+  let previous = -Infinity;
+  for (const { distribution, values } of [...lines].sort((a, b) => b.values[last] - a.values[last])) {
+    previous = Math.max(y(values[last]), previous + 13);
+    endLabels.set(distribution, previous);
+  }
 
   function track(clientX: number, svg: SVGSVGElement) {
     const px = clientX - svg.getBoundingClientRect().left;
@@ -200,8 +155,12 @@ function Chart({ data, counter, meta, width }: { data: GrowthData; counter: stri
         height={HEIGHT}
         role="img"
         aria-label={`${capitalise(counter)} against array size`}
+        onPointerDown={(event) => track(event.clientX, event.currentTarget)}
         onPointerMove={(event) => track(event.clientX, event.currentTarget)}
-        onPointerLeave={() => setHover(null)}
+        onPointerLeave={(event) => {
+          // A finger lifting also fires "leave"; keep the touched point readable until the next touch.
+          if (event.pointerType === "mouse") setHover(null);
+        }}
         className="touch-pan-y"
       >
         {y.ticks(4).map((tick) => (
@@ -244,7 +203,7 @@ function Chart({ data, counter, meta, width }: { data: GrowthData; counter: stri
         {referenceValues && (
           <path d={path(referenceValues) ?? ""} fill="none" stroke="var(--viz-default)" strokeWidth={1.5} strokeDasharray="4 4" />
         )}
-        {lines.map(({ distribution, values }, i) => (
+        {lines.map(({ distribution, values }) => (
           <g key={distribution}>
             <path d={path(values) ?? ""} fill="none" stroke={COLORS[distribution]} strokeWidth={2.5} strokeLinecap="round" />
             {values.map((value, j) => (
@@ -259,7 +218,7 @@ function Chart({ data, counter, meta, width }: { data: GrowthData; counter: stri
             ))}
             <text
               x={x(sizes[last]) + 9}
-              y={endLabels[i]}
+              y={endLabels.get(distribution)}
               dy="0.32em"
               className="fill-foreground text-[11px] font-medium tabular-nums"
             >
@@ -299,7 +258,7 @@ function Chart({ data, counter, meta, width }: { data: GrowthData; counter: stri
               </tr>
             </thead>
             <tbody>
-              {sizes.slice(0, data.done).map((size, i) => (
+              {sizes.map((size, i) => (
                 <tr key={size} className="border-t">
                   <td className="py-1 pr-2 text-left">{size}</td>
                   {lines.map(({ distribution, values }) => (

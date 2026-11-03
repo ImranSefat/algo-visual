@@ -10,6 +10,7 @@ import { InputControls } from "@/components/controls/input-controls";
 import { Canvas } from "@/components/visualizer/canvas";
 import { Transport } from "@/components/visualizer/transport";
 import { VisualizerRoot } from "@/components/visualizer/visualizer-root";
+import { measureGrowth } from "@/lib/growth";
 
 export const dynamicParams = false;
 
@@ -28,6 +29,8 @@ export default async function AlgorithmPage({ params }: PageProps<"/[category]/[
   const algo = getAlgorithm(slug);
   if (!algo || algo.meta.category !== category) notFound();
   const { meta } = algo;
+  // Seeded, so identical for every visitor: measured once here (at build time) instead of in the browser.
+  const growth = meta.growthChart && meta.defaultInput.kind === "array" ? measureGrowth(algo) : null;
 
   return (
     <VisualizerRoot key={slug} slug={slug}>
@@ -54,7 +57,7 @@ export default async function AlgorithmPage({ params }: PageProps<"/[category]/[
         <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(340px,440px)]">
           <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-4">
             <InputControls />
-            {meta.growthChart && <GrowthChart meta={meta} />}
+            {growth && <GrowthChart meta={meta} data={growth} />}
           </div>
           <div className="grid gap-4">
             <DescriptionCard meta={meta} />

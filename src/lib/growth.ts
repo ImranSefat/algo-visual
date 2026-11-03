@@ -25,10 +25,10 @@ export function samplesFor(distribution: Distribution, size: number): number {
 }
 
 /**
- * The site's own inputs draw values from 5 to 99, so above roughly 95 elements they repeat values, which
- * blunts the worst cases (Reversed no longer costs n(n-1)/2). For the chart, Random, Nearly sorted and
- * Reversed use the distinct values 1..n instead, shaped the same way as the Distribution control builds
- * them. Few unique keeps the site's own four values.
+ * The site's own inputs pick values from 5 to 99, so they repeat even in small arrays (a random array of 12
+ * already has about a 50% chance of a repeat), which blunts the worst cases (Reversed no longer costs
+ * n(n-1)/2). For the chart, Random, Nearly sorted and Reversed use the distinct values 1..n instead, shaped
+ * the same way as the Distribution control builds them. Few unique keeps the site's own four values.
  */
 function growthSpec(size: number, distribution: Distribution, seed: number): ArrayInputSpec {
   const ascending = Array.from({ length: size }, (_, i) => i + 1);
@@ -66,8 +66,6 @@ export type GrowthSeries = Record<string, number[]>;
 
 export type GrowthData = {
   sizes: number[];
-  /** How many of `sizes` are measured so far; the chart draws progressively. */
-  done: number;
   series: Partial<Record<Distribution, GrowthSeries>>;
 };
 
@@ -87,28 +85,26 @@ export function measurePoint(
   return totals;
 }
 
+const measured = new Map<string, GrowthData>();
+
 /**
- * Measures every size and distribution, calling `onProgress` after each size so the chart can draw as it
- * goes. Yields to the browser between sizes; resolves to null if `isCancelled()` turns true part-way.
+ * Measures every size and distribution. The runs are seeded, so the result is the same for every visitor:
+ * call this on the server (at build time) and pass the data to the chart, rather than measuring in the
+ * browser. Results are remembered per algorithm so the dev server does not repeat the work on every reload.
  */
-export async function measureGrowth(
-  algo: AnyAlgorithm,
-  isCancelled: () => boolean,
-  onProgress?: (data: GrowthData) => void,
-): Promise<GrowthData | null> {
-  const data: GrowthData = { sizes: GROWTH_SIZES, done: 0, series: {} };
-  for (let i = 0; i < GROWTH_SIZES.length; i++) {
+export function measureGrowth(algo: AnyAlgorithm): GrowthData {
+  const known = measured.get(algo.meta.slug);
+  if (known) return known;
+  const data: GrowthData = { sizes: GROWTH_SIZES, series: {} };
+  GROWTH_SIZES.forEach((size, i) => {
     for (const distribution of GROWTH_DISTRIBUTIONS) {
-      const point = measurePoint(algo, GROWTH_SIZES[i], distribution);
+      const point = measurePoint(algo, size, distribution);
       const series = (data.series[distribution] ??= {});
       for (const [name, value] of Object.entries(point)) {
         (series[name] ??= new Array<number>(GROWTH_SIZES.length).fill(0))[i] = value;
       }
     }
-    data.done = i + 1;
-    onProgress?.({ ...data });
-    await new Promise<void>((resolve) => setTimeout(resolve, 0));
-    if (isCancelled()) return null;
-  }
+  });
+  measured.set(algo.meta.slug, data);
   return data;
 }
