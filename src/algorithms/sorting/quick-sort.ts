@@ -178,8 +178,10 @@ export function* run(input: Item[]): Generator<Step<ArrayView>> {
         i++;
       }
     }
-    [a[i], a[hi]] = [a[hi], a[i]];
-    t.count("swaps");
+    if (i !== hi) {
+      [a[i], a[hi]] = [a[hi], a[i]];
+      t.count("swaps");
+    }
     done.add(pivot.id);
     yield t.step(
       view({ lo, hi, pivot: i, i }),
