@@ -1,7 +1,6 @@
-import { resolveInput, type ArrayInputSpec, type Distribution, type ResolvedInput } from "@/algorithms/core/input";
+import type { ArrayInputSpec, Distribution } from "@/algorithms/core/input";
 import { mulberry32, randInt, shuffle } from "@/algorithms/core/prng";
-import type { Step } from "@/algorithms/core/types";
-import type { AnyAlgorithm } from "@/algorithms/registry";
+import { runToEnd, type AnyAlgorithm } from "@/algorithms/registry";
 
 /** Array sizes the growth chart measures. */
 export const GROWTH_SIZES = [10, 25, 50, 100, 150, 200, 250, 300];
@@ -50,17 +49,6 @@ function growthSpec(size: number, distribution: Distribution, seed: number): Arr
     : { kind: "array", size, distribution, seed };
 }
 
-/**
- * Counters after the last step. Unlike `runAlgorithm`, the steps are not kept and `MAX_STEPS` does not
- * apply, so large sizes are counted in full instead of being cut off at the cap.
- */
-function finalCounters(algo: AnyAlgorithm, spec: ArrayInputSpec): Record<string, number> {
-  const run = algo.run as (input: ResolvedInput) => Generator<Step<unknown>>;
-  let counters: Record<string, number> = {};
-  for (const step of run(resolveInput(spec))) if (step.counters) counters = step.counters;
-  return counters;
-}
-
 /** Counter name -> average value at each size, for one distribution. */
 export type GrowthSeries = Record<string, number[]>;
 
@@ -69,7 +57,10 @@ export type GrowthData = {
   series: Partial<Record<Distribution, GrowthSeries>>;
 };
 
-/** Average final counters of `algo` over `samples` seeded runs on arrays of `size`. */
+/**
+ * Average final counters of `algo` over `samples` seeded runs on arrays of `size`. The steps are not kept and no
+ * cap applies, so large sizes are counted in full instead of being cut off at `MAX_STEPS`.
+ */
 export function measurePoint(
   algo: AnyAlgorithm,
   size: number,
@@ -78,7 +69,7 @@ export function measurePoint(
 ): Record<string, number> {
   const totals: Record<string, number> = {};
   for (let sample = 0; sample < samples; sample++) {
-    const counters = finalCounters(algo, growthSpec(size, distribution, 101 + sample));
+    const counters = runToEnd(algo, growthSpec(size, distribution, 101 + sample)).counters;
     for (const [name, value] of Object.entries(counters)) totals[name] = (totals[name] ?? 0) + value;
   }
   for (const name of Object.keys(totals)) totals[name] /= samples;

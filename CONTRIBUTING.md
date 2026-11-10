@@ -38,6 +38,7 @@ pnpm build
 | `src/components/renderers` | One renderer per kind of picture (bars, trees, grids…) |
 | `src/components/controls` | Input editors |
 | `src/store` | Playback and input stores |
+| `src/agent` | The tool layer AI assistants call: run an algorithm, measure it, build a link. Plain TypeScript, no React |
 
 The one hard rule: nothing in `src/algorithms` may import React or touch the DOM. Algorithms produce data, and renderers draw it.
 

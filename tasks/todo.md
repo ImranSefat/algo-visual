@@ -48,7 +48,7 @@ Source of truth: the build spec pasted at session start (phases 1–6). Decision
 - Graph and DP algorithm modules were drafted by two parallel subagents against shared state types,
   then reviewed and integrated here.
 
-## Phase 7 — AI integration (plan, not started; waiting on the decisions at the end)
+## Phase 7 — AI integration (step 0 in progress; phases A–D waiting on the decisions at the end)
 
 Full write-up: `docs/ai-integration-plan.md`.
 
@@ -64,18 +64,20 @@ Architecture: one tool layer, three consumers.
 - LangGraph agent (loads the same tools through the MCP server): showcase page.
 
 ### Step 0 — shared tool layer (needed by everything below)
+- Starter in `src/agent/` (README there); `pnpm agent` runs a tool from the terminal. Good first tools:
+  `list_algorithms`, `profile_input`, `get_algorithm`
 - [ ] `list_algorithms({ category? })`: slug, name, input kind, complexity (best/avg/worst, space, stable, inPlace), counter names
 - [ ] `get_algorithm({ slug, include? })`: description, plus source / pseudocode / python on request
-- [ ] `run_algorithm({ slug, input })`: validate with `sanitizeSpec`, exhaust the generator without keeping steps
+- [x] `run_algorithm({ slug, input })`: validate with `sanitizeSpec`, exhaust the generator without keeping steps
       (as `finalCounters` in `growth.ts` does), return output, final counters, step count, a few step notes and a deep link
 - [ ] `compare_algorithms({ slugs, input })`: counters side by side + `/compare` link (the page has two panes, so link pairs)
 - [ ] `profile_input({ values })`: size, sortedness (inversion ratio), duplicate ratio, range, so the agent can describe real data
 - [ ] `measure_growth({ slug, sizes?, distributions? })`: generalise `measureGrowth` from PR #6 beyond Quick Sort (array kinds)
-- [ ] `make_link({ slug | [a, b], input, step? })`: built on `queryFromSpec`
+- [x] `make_link({ slug | [a, b], input, step? })`: built on `queryFromSpec`
 - [ ] Counter caveat: counters differ (comparisons/swaps vs shifts vs reads/writes; hops/relinks vs probes/collisions).
       Return raw counters + step count; tool descriptions say not to compare unlike counters
-- [ ] Limits: reuse `LIMITS`/`MAX_STEPS`; experiments may go past 150 (no animation) up to a hard cap + time budget
-- [ ] Vitest: schemas, limits, every deep link round-trips through `specFromQuery`
+- [x] Limits: reuse `LIMITS`/`MAX_STEPS`; experiments may go past 150 (no animation) up to a hard cap + time budget
+- [x] Vitest: schemas, limits, every deep link round-trips through `specFromQuery`
 
 ### Phase A — MCP server (headline; costs nothing to run, the user's AI client pays)
 - [ ] Read the Next 16 route-handler docs in `node_modules/next/dist/docs/` first

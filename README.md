@@ -78,6 +78,7 @@ Other scripts:
 pnpm test       # Vitest: invariants and correctness for every algorithm
 pnpm lint
 pnpm build      # every route is prerendered as static HTML
+pnpm agent      # try the AI tool layer from the terminal (src/agent/README.md)
 ```
 
 ## How it works

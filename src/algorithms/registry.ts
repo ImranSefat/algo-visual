@@ -1,5 +1,5 @@
 import { resolveInput, type InputKind, type InputSpec, type ResolvedInput } from "./core/input";
-import { collect } from "./core/step";
+import { collect, exhaust, type RunLimits, type RunSummary } from "./core/step";
 import type { AlgorithmMeta, AlgorithmModule, Category, Step } from "./core/types";
 
 import * as editDistance from "./dp/edit-distance";
@@ -108,4 +108,13 @@ export function algorithmHref(meta: Pick<AlgorithmMeta, "category" | "slug">): s
 export function runAlgorithm(algo: AnyAlgorithm, spec: InputSpec): Step<unknown>[] {
   const run = algo.run as (input: ResolvedInput) => Generator<Step<unknown>>;
   return collect(run(resolveInput(spec)));
+}
+
+/**
+ * Resolves `spec` and runs the algorithm to the end keeping only the last step and the counters, so a big
+ * experiment costs no memory. `MAX_STEPS` does not apply; pass `limits` to cap a run.
+ */
+export function runToEnd(algo: AnyAlgorithm, spec: InputSpec, limits?: RunLimits): RunSummary<unknown> {
+  const run = algo.run as (input: ResolvedInput) => Generator<Step<unknown>>;
+  return exhaust(run(resolveInput(spec)), limits);
 }

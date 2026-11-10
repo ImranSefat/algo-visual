@@ -1,6 +1,7 @@
 # AI integration plan
 
-**Status:** plan only, nothing built yet. Waiting on the [decisions](#decisions-needed-before-any-code) at the end.
+**Status:** Step 0 is being built in `src/agent/` (its README says what works and what is next). Phases A to D are
+not started; the [decisions](#decisions-needed-before-any-code) at the end are still open.
 **Date:** 3 November 2026
 
 ## The pitch
@@ -71,14 +72,20 @@ only code that touches the registry. Everything else calls these tools.
 | `measure_growth` | slug, optional sizes and input kinds | counters at each size for each input kind |
 | `make_link` | slug (or two for compare), input, optional step | a URL that plays that run |
 
+**Where it stands (10 November 2026):** the folder exists with the shared pieces (`tool.ts`, `schemas.ts`, `input.ts`,
+`links.ts`, `limits.ts`, `counters.ts`) and two working tools, `run_algorithm` and `make_link`. `list_algorithms`,
+`get_algorithm` and `profile_input` have their schema and description and a `TODO` body, so they are good first tools.
+`compare_algorithms` and `measure_growth` come after those. `pnpm agent` tries any tool from the terminal, and
+`src/agent/README.md` has the details.
+
 Tasks:
 
-- [ ] `run_algorithm` runs the generator to the end without keeping every step (as `finalCounters` in `growth.ts` does),
-      so memory stays flat.
+- [x] `run_algorithm` runs the generator to the end without keeping every step (`runToEnd` in `registry.ts`, which
+      `growth.ts` now uses too), so memory stays flat.
 - [ ] Generalise `measureGrowth` beyond Quick Sort (array inputs only).
-- [ ] Limits: reuse `LIMITS` and `MAX_STEPS`. Experiments may go past the animation's 150 elements (no animation is
-      needed), up to a hard cap and a time budget per call.
-- [ ] Tests (Vitest): schemas, limits, and every deep link round-trips through `specFromQuery`.
+- [x] Limits: reuse `LIMITS` and `MAX_STEPS`. Experiments may go past the animation's 150 elements (no animation is
+      needed), up to a hard cap and a time budget per call (`EXPERIMENT` in `src/agent/limits.ts`).
+- [x] Tests (Vitest): schemas, limits, and every deep link round-trips through `specFromQuery`.
 
 ### Watch out: counters aren't comparable across algorithms
 

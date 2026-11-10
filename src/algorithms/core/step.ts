@@ -66,3 +66,44 @@ export function collect<S>(gen: Generator<Step<S>>): Step<S>[] {
   }
   return steps;
 }
+
+export type RunLimits = {
+  /** Stop once this many steps have been produced. */
+  maxSteps?: number;
+  /** Stop once the run has taken this many milliseconds (checked every 256 steps). */
+  maxMs?: number;
+};
+
+export type RunSummary<S> = {
+  /** Steps produced before the generator finished or a limit stopped it. */
+  steps: number;
+  /** The last step produced, or null when there was none. */
+  last: Step<S> | null;
+  /** Counters after the last step. */
+  counters: Record<string, number>;
+  /** True when a limit stopped the run with steps still to come, so `counters` are partial. */
+  stoppedEarly: boolean;
+};
+
+/**
+ * Exhausts a generator keeping only the last step and the counters, so memory stays flat however long the run
+ * is. Unlike `collect`, nothing is capped unless `limits` says so, and a run that ends exactly at a cap counts
+ * as complete.
+ */
+export function exhaust<S>(gen: Generator<Step<S>>, limits: RunLimits = {}): RunSummary<S> {
+  const { maxSteps = Infinity, maxMs = Infinity } = limits;
+  const started = performance.now();
+  const summary: RunSummary<S> = { steps: 0, last: null, counters: {}, stoppedEarly: false };
+  for (;;) {
+    const { done, value } = gen.next();
+    if (done) return summary;
+    summary.steps++;
+    summary.last = value;
+    if (value.counters) summary.counters = value.counters;
+    const outOfTime = summary.steps % 256 === 0 && performance.now() - started > maxMs;
+    if (summary.steps >= maxSteps || outOfTime) {
+      summary.stoppedEarly = !gen.next().done;
+      return summary;
+    }
+  }
+}
