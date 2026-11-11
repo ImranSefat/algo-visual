@@ -45,8 +45,29 @@ describe("sorting counters", () => {
   });
 
   it("Quick Sort does not count a swap when the pivot is already in place", () => {
+    // Sorted input with distinct values: every pivot is already in place.
     expect(counters("quick-sort", sorted).swaps).toBe(0);
     expect(counters("quick-sort", reversed).swaps).toBe(12);
     expect(counters("quick-sort", VALUES)).toMatchObject({ comparisons: 108, swaps: 30 });
+  });
+
+  it("Quick Sort's last step of each partition matches the swap count", () => {
+    const algo = getAlgorithm("quick-sort")!;
+    const lastSteps = (values: number[]) => runAlgorithm(algo, custom(values)).filter((s) => s.line === 18);
+
+    // Sorted, distinct values: no swap, so the step says the pivot was already in place and is not coloured "swap".
+    for (const step of lastSteps(sorted)) {
+      expect(step.note).toContain("already at index");
+      expect(step.highlights.some((h) => h.kind === "swap")).toBe(false);
+    }
+    // Reversed values: the pivot really moves in the first partition.
+    const first = lastSteps(reversed)[0];
+    expect(first.note).toContain("Move pivot");
+    expect(first.highlights.some((h) => h.kind === "swap")).toBe(true);
+  });
+
+  it("Quick Sort still counts swaps on sorted input with duplicate values", () => {
+    // The loop uses `<`, so a duplicate of the pivot is exchanged with it. Two real elements move, so it counts.
+    expect(counters("quick-sort", [1, 1, 2, 2, 3, 3, 4, 4]).swaps).toBe(4);
   });
 });
