@@ -178,15 +178,20 @@ export function* run(input: Item[]): Generator<Step<ArrayView>> {
         i++;
       }
     }
-    [a[i], a[hi]] = [a[hi], a[i]];
-    t.count("swaps");
+    const moved = i !== hi;
+    if (moved) {
+      [a[i], a[hi]] = [a[hi], a[i]];
+      t.count("swaps");
+    }
     done.add(pivot.id);
     yield t.step(
       view({ lo, hi, pivot: i, i }),
-      [hl("swap", pivot.id), range(lo, hi), finished()],
+      [hl(moved ? "swap" : "pivot", pivot.id), range(lo, hi), finished()],
       18,
       { lo, hi, pivot: pivot.value, i },
-      `Move pivot ${pivot.value} to index ${i}, its final position`,
+      moved
+        ? `Move pivot ${pivot.value} to index ${i}, its final position`
+        : `Pivot ${pivot.value} is already at index ${i}, its final position`,
     );
     return i;
   }
