@@ -1,7 +1,8 @@
 # AI integration plan
 
-**Status:** Step 0 is being built in `src/agent/` (its README says what works and what is next). Phases A to D are
-not started; the [decisions](#decisions-needed-before-any-code) at the end are still open.
+**Status:** Step 0 is being built in `src/agent/` (its README says what works and what is next). For now a local
+chat on Ollama takes the place of Phase B (issue #9, template in `src/agent/ollama/`). Phases A, C and D are not
+started.
 **Date:** 3 November 2026
 
 ## The pitch
@@ -129,6 +130,11 @@ Free for you to run, because the user's own AI client does the thinking. Best de
 
 ## Phase B: in-site Algorithm Advisor
 
+**Update (12 November 2026):** for now this is a local chat on [Ollama](https://ollama.com) instead: it runs on the
+contributor's own machine with `qwen3:8b`, so no hosting, no API key and no cost. The template is in
+`src/agent/ollama/` and the work is tracked in issue #9. The Claude API version below stays the option for a hosted
+Advisor later.
+
 A chat panel on the site, using your API key.
 
 - [ ] `/api/advisor` route: the Anthropic TypeScript SDK's tool runner (`betaZodTool` + `client.beta.messages.toolRunner`)
@@ -189,8 +195,10 @@ The MCP server (Phase A) costs nothing in API fees, because the user's AI client
 ## Decisions needed before any code
 
 1. **Who pays for the hosted AI features?** MCP server only (free to run); the Advisor on your key with a rate limit and
-   a monthly cap; or visitors bring their own key.
-2. **Which model for the Advisor?** `claude-opus-5-5` (default) or the cheaper `claude-haiku-5-5`.
+   a monthly cap; or visitors bring their own key. *For now (12 November 2026): nothing hosted, the chat runs locally
+   on Ollama.*
+2. **Which model for the Advisor?** `claude-opus-5-5` (default) or the cheaper `claude-haiku-5-5`. *For now: `qwen3:8b`
+   on Ollama, changeable with `OLLAMA_MODEL`.*
 3. **LangGraph?** Build the `/lab` page, or stop after the MCP server and the Advisor.
 
 ## Recommended order

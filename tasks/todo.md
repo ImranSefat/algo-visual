@@ -79,6 +79,34 @@ Architecture: one tool layer, three consumers.
 - [x] Limits: reuse `LIMITS`/`MAX_STEPS`; experiments may go past 150 (no animation) up to a hard cap + time budget
 - [x] Vitest: schemas, limits, every deep link round-trips through `specFromQuery`
 
+### Ollama chat (local only; replaces the Claude API in phase B for now)
+
+Decided 12 Nov 2026: Ollama on the contributor's own machine, no cloud, no keys. Imran builds a thin template;
+the contributor builds the chat itself, one pull request per milestone. Tracked in GitHub issue #9, with sub-issues
+#10 (template) to #22.
+
+Template (Imran, plumbing only, no chat logic), issue #10:
+- [x] `src/agent/ollama/config.ts`: `OLLAMA_HOST` (default `http://localhost:11434`), `OLLAMA_MODEL` (default `qwen3:8b`)
+- [x] `src/agent/ollama/client.ts`: typed `chat({ messages, tools })` over Ollama's `/api/chat`, plus a clear error when
+      Ollama is not running or the model is not pulled
+- [x] `src/agent/ollama/to-ollama-tools.ts`: the agent `tools` list in Ollama's format (`z.toJSONSchema`, no new deps).
+      Rewrites `oneOf` → `anyOf` and `const` → `enum`, which Ollama drops (0/9 valid tool calls before, 24/24 after)
+- [x] `pnpm agent:check`: says whether Ollama is up, the model is pulled and supports tools, and shows a real tool call
+- [x] `src/agent/ollama/ask.ts`, `cli.ts`, `prompt.ts`: signatures and numbered `TODO` steps only, like the planned tools
+- [x] Fake Ollama for tests + `it.todo` per milestone, so CI never needs Ollama
+- [x] README "Ollama chat" section with setup and the milestones; plan doc + phase B note updated
+- [x] Verify: lint, test, build; `pnpm agent:check` against the local `qwen3:8b`; a throwaway end-to-end loop
+      (not committed) answered with real counts and recovered from a `ToolError`
+
+Contributor milestones (in order, one PR each):
+1. Ask one question with no tools and print the answer
+2. Pass the tools; when the model asks for one, run it with `callTool` and send the result back
+3. Loop until the model answers in words, with a turn cap
+4. `pnpm agent:chat`: a terminal chat that keeps the conversation
+5. Write and tune the system prompt (try real questions against `qwen3:8b`)
+6. Step 0 tools (counters table, `list_algorithms`, `profile_input`, `get_algorithm`, ...) now show up in the chat
+7. Later: a chat panel on the site (dev only while it is local)
+
 ### Phase A — MCP server (headline; costs nothing to run, the user's AI client pays)
 - [ ] Read the Next 16 route-handler docs in `node_modules/next/dist/docs/` first
 - [ ] Remote: Streamable HTTP at `src/app/api/mcp/route.ts` with `@modelcontextprotocol/sdk` (or Vercel's `mcp-handler`

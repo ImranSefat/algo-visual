@@ -20,7 +20,10 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "agent": "tsx src/agent/playground.ts"
+    "agent": "tsx src/agent/playground.ts",
+    "agent:check": "tsx src/agent/ollama/check.ts",
+    "agent:ask": "tsx src/agent/ollama/cli.ts ask",
+    "agent:chat": "tsx src/agent/ollama/cli.ts chat"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
