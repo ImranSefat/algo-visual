@@ -12,11 +12,12 @@ import { OllamaError } from "./client";
 /** Prints the answer to one question, or how to use the command when there is no question. */
 async function askOnce(question: string): Promise<void> {
   if (!question) {
-    console.log('Ask one question, for example:\n  pnpm agent:ask "What is a stable sort?"');
+    console.error('Ask one question, for example:\n  pnpm agent:ask "What is a stable sort?"');
     return;
   }
   const { answer } = await ask(question);
-  console.log(answer);
+  // qwen3 sometimes starts its answer with blank lines (check.ts trims for the same reason).
+  console.log(answer.trim() || "(the model gave no answer)");
 }
 
 /**

@@ -24,7 +24,7 @@ describe("ask", () => {
     const result = await ask("Is merge sort stable?", history);
 
     const sent: Message[] = [{ role: "system", content: SYSTEM_PROMPT }, ...history, { role: "user", content: "Is merge sort stable?" }];
-    expect(requests).toEqual([{ path: "/api/chat", body: { model: OLLAMA.model, messages: sent, think: false, stream: false } }]);
+    expect(requests).toEqual([{ path: "/api/chat", body: { model: OLLAMA.model, messages: sent, think: OLLAMA.think, stream: false } }]);
     expect(result.answer).toBe("Yes, merge sort is stable.");
     expect(result.messages).toEqual([...sent, { role: "assistant", content: "Yes, merge sort is stable." }]);
   });
