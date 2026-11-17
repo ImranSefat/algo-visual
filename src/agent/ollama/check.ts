@@ -48,7 +48,7 @@ async function main(): Promise<number> {
       console.log(`! Those arguments don't fit the tool's schema, so the tool would refuse them. The model can retry`);
       console.log(`  once ask() sends errors back (#12). If this happens every time, the schema may not reach the model.`);
     }
-    console.log("\nReady. Next: build ask() in src/agent/ollama/ask.ts (issue #11).");
+    console.log('\nReady. Try: pnpm agent:ask "What is a stable sort?"');
     return 0;
   } catch (error) {
     if (!(error instanceof OllamaError)) throw error;

@@ -6,16 +6,19 @@
  *
  * Run `pnpm agent:check` first if anything fails: it says what is missing.
  */
+import { ask } from "./ask";
 import { OllamaError } from "./client";
 
-/**
- * TODO (#11): print the answer to one question.
- *  1. If `question` is empty, print how to use the command and stop.
- *  2. `await ask(question)` from ./ask and print `answer`.
- */
-const askOnce: (question: string) => Promise<void> = async () => {
-  throw new Error("pnpm agent:ask is not built yet: see the TODO in src/agent/ollama/cli.ts (issue #11).");
-};
+/** Prints the answer to one question, or how to use the command when there is no question. */
+async function askOnce(question: string): Promise<void> {
+  if (!question) {
+    console.error('Ask one question, for example:\n  pnpm agent:ask "What is a stable sort?"');
+    return;
+  }
+  const { answer } = await ask(question);
+  // qwen3 sometimes starts its answer with blank lines (check.ts trims for the same reason).
+  console.log(answer.trim() || "(the model gave no answer)");
+}
 
 /**
  * TODO (#14): a conversation in the terminal.
