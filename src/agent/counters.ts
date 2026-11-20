@@ -24,10 +24,10 @@ export const COUNTERS: Partial<Record<string, CounterInfo>> = {
     measures: "one exchange of two elements to move a value towards its place (neighbours in Insertion Sort, a gap apart in Shell Sort)",
     comparableWith: ["shifts", "swaps"],
   },
-  // Each sort writes in its own pattern (Merge copies back after each merge, Counting and Radix fill an output
-  // array and copy it back), so the counters table compares writes across algorithms only loosely.
+  // Writes are exact, but each sort also does work no counter records: Counting Sort walks its whole value range
+  // (max - min + 1) and Radix Sort its 10 digit buckets per pass. So the counters table compares writes only loosely.
   writes: {
-    measures: "one value written into an array, the temporary one or back into the original; each sort writes in its own pattern, so compare writes across algorithms only roughly",
+    measures: "one value written into an array, the temporary one or back into the original; writes leave out other work (Counting Sort also walks its whole value range), so compare writes across algorithms only roughly",
     comparableWith: ["writes"],
   },
   // Only Counting Sort reads and only Radix Sort makes passes, so these have nothing to compare with.
