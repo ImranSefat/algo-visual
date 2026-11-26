@@ -43,11 +43,10 @@ Running an algorithm to the end without keeping its steps is `runToEnd` in `src/
 
 Good first tools, one pull request each. Each file has a `TODO` comment with the steps, and `__tests__/tools.test.ts` has an `it.todo` for each to turn into a real test. Everything is tracked in issue #9.
 
-1. `counters.ts`: the rest of the counters table (#16).
-2. `tools/list-algorithms.ts` (#17)
-3. `tools/profile-input.ts` (#18)
-4. `tools/get-algorithm.ts` (#19)
-5. New tools: `compare_algorithms` (#20) and `measure_growth` (#21)
+1. `tools/list-algorithms.ts` (#17)
+2. `tools/profile-input.ts` (#18)
+3. `tools/get-algorithm.ts` (#19)
+4. New tools: `compare_algorithms` (#20) and `measure_growth` (#21)
 
 When a tool works, move it from `planned` to `tools` in `tools/index.ts`. `pnpm lint`, `pnpm test` and `pnpm build` must pass before the pull request.
 
