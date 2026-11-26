@@ -1,11 +1,11 @@
 import { runToEnd, type AnyAlgorithm } from "@/algorithms/registry";
 
 /**
- * What each counter measures, in words an answer can use. Tools return raw counters and never add them up or turn
- * one into another: a swap is not a write. This table is what tells the model which counters mean the same thing.
+ * What each counter measures, in words an answer can use. Tools return raw counters and never add them up: a
+ * swap is not a shift is not a write. This table is what tells the model which counters mean the same thing.
  *
- * Shifts and swaps are the same event on this site: Insertion and Shell Sort draw each shift as two elements trading
- * places (see insertion-sort.ts), so Insertion Sort's shifts equal Bubble Sort's swaps on the same input.
+ * Insertion Sort's shifts equal Bubble Sort's swaps on the same input because both count its inversions, not because
+ * they are the same operation: a shift writes one slot (`a[j + 1] = a[j]`), a swap writes two.
  *
  * Source: the counters table for the sorting algorithms (November 2026). Searching, structure and graph counters
  * can be added the same way later.
@@ -19,18 +19,20 @@ export type CounterInfo = {
 
 export const COUNTERS: Partial<Record<string, CounterInfo>> = {
   comparisons: { measures: "one comparison of two values", comparableWith: ["comparisons"] },
-  swaps: { measures: "one exchange of two elements", comparableWith: ["swaps", "shifts"] },
+  swaps: { measures: "one exchange of two elements", comparableWith: ["swaps"] },
   shifts: {
-    measures: "one exchange of two elements to move a value towards its place (neighbours in Insertion Sort, a gap apart in Shell Sort)",
-    comparableWith: ["shifts", "swaps"],
+    measures: "one value moved to another slot: one place over in Insertion Sort and the Dynamic Array, gap places in Shell Sort",
+    comparableWith: ["shifts"],
   },
-  // Writes are exact, but each sort also does work no counter records: Counting Sort walks its whole value range
-  // (max - min + 1) and Radix Sort its 10 digit buckets per pass. So the counters table compares writes only loosely.
+  // Writes leave out work that has no counter: Counting Sort walks its whole value range (max - min + 1), and both
+  // Counting and Radix Sort update a count array for every value. So the counters table compares writes only loosely.
   writes: {
-    measures: "one value written into an array, the temporary one or back into the original; writes leave out other work (Counting Sort also walks its whole value range), so compare writes across algorithms only roughly",
+    measures:
+      "one element placed into the output or aux array, or copied back; writes leave out other work (Counting and Radix Sort also update a count array), so compare writes across algorithms only roughly",
     comparableWith: ["writes"],
   },
-  // Only Counting Sort reads and only Radix Sort makes passes, so these have nothing to compare with.
+  // Only Counting Sort reports reads (Radix Sort also reads every value on each pass but has no counter for it), and
+  // only Radix Sort reports passes, so these have nothing to compare with yet.
   reads: { measures: "one value read to count it", comparableWith: ["reads"] },
   passes: { measures: "one pass over all the values, sorting them by one digit", comparableWith: ["passes"] },
 };
